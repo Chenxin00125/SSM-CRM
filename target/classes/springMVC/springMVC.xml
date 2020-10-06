@@ -15,8 +15,10 @@
         <property name="prefix" value="/WEB-INF/view/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
+    <mvc:resources location="/jquery/" mapping="/jquery/**"/>
+
     <mvc:annotation-driven/>
-    <mvc:resources mapping="/static/**" location="/static/"/>
+<!--    <mvc:resources mapping="/static/**" location="/static/"/>-->
 <!--    &lt;!&ndash;    声明拦截器&ndash;&gt;-->
 <!--    <mvc:interceptors>-->
 <!--        <mvc:interceptor>-->

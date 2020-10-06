@@ -1,18 +1,19 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    String basePath = request.getScheme() + "://"
-            + request.getServerName() + ":"
-            + request.getServerPort()
-            + request.getContextPath() + "/";
+String basePath = request.getScheme() + "://"
++ request.getServerName() + ":"
++ request.getServerPort()
++ request.getContextPath() + "/";
 %>
 <html>
 
 <head>
-    <title>Title</title>
-    <base href="<%=basePath%>">
+<meta charset="UTF-8">
+	<base href="<%=basePath%>">
 </head>
 <body>
-jsp页面
+	<script type="text/javascript">
+		document.location.href = "login.jsp";
+	</script>
 </body>
 </html>
-
