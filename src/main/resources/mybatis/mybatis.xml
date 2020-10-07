@@ -8,10 +8,10 @@
     </settings>
 
     <typeAliases>
-        <package name="com.cx.domain"/>
+        <package name="com.cx.settings.domain"/>
     </typeAliases>
-<!--    <mappers>-->
-<!--        <package name="com.cx.dao"/>-->
-<!--    </mappers>-->
+    <mappers>
+        <package name="com.cx.settings.dao"/>
+    </mappers>
 
 </configuration>

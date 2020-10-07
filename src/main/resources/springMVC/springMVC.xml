@@ -10,15 +10,17 @@
        http://www.springframework.org/schema/mvc
        https://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <context:component-scan base-package="com.cx.controller"/>
+    <context:component-scan base-package="com.cx.settings.web.controller"/>
     <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-        <property name="prefix" value="/WEB-INF/view/"/>
+        <property name="prefix" value="/WEB-INF/workbench/"/>
         <property name="suffix" value=".jsp"/>
     </bean>
+
     <mvc:resources location="/jquery/" mapping="/jquery/**"/>
     <mvc:resources location="/static/" mapping="/static/**"/>
-    <mvc:resources location="/settings/" mapping="/settings/**"/>
-    <mvc:resources location="/workbench/" mapping="/workbench/**"/>
+
+<!--    <mvc:resources location="/WEB-INF/settings/" mapping="/WEB-INF/settings/**"/>-->
+<!--    <mvc:resources location="/WEB-INF/workbench/" mapping="/WEB-INF/workbench/**"/>-->
 
     <mvc:annotation-driven/>
 <!--    <mvc:resources mapping="/static/**" location="/static/"/>-->
