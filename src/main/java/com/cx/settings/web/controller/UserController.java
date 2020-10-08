@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -24,10 +26,10 @@ public class UserController {
 
     @RequestMapping("login")
     @ResponseBody
-    public Map login(User user, HttpServletRequest request){
+    public Map login(User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
         user.setLoginPwd(getMD5(user.getLoginPwd()));
         String type = user.getLoginAct();
-        System.out.println(type);
+        //System.out.println(type);
         //含有@走邮箱查询
         if (type.indexOf("@")!=-1){
             user =  userService.selectUserByEmail(user);
@@ -44,7 +46,8 @@ public class UserController {
                 String Utime = user.getExpireTime();//失效时间
                 String Ttime = getSysTime();//系统时间
                 System.out.println(Ttime+"----"+Utime);
-                if (Utime.compareTo(Ttime) >0) {
+                if (Utime.compareTo(Ttime) > 0) {
+                    request.getSession().setAttribute("user",user);
                     flag = true;
                 }
                 msg = "该账号已过期，请联系专员处理";
@@ -56,7 +59,6 @@ public class UserController {
         map.put("flag",flag);
         map.put("msg",msg);
         map.put("page","workbench/index.jsp");
-        request.getSession().setAttribute("user",user);
         return map;
     }
 }

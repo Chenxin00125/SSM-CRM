@@ -14,7 +14,7 @@
         $(function () {
             $("#btn").click(function () {
                $.ajax({
-                   url : "logintest",
+                   url : "logintest.do",
                    data : {
                        name : $("#loginAct").val(),
                        loginPwd : $("#loginPwd").val()
@@ -22,7 +22,7 @@
                    type : "post",
                    dataType : "json",
                    success : function (data) {
-                           alert(data.name+"---"+data.loginPwd);
+                           location.href=data;
                    }
                })
             })

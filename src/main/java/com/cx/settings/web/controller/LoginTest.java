@@ -15,7 +15,7 @@ public class LoginTest {
     @Autowired
     private UserService userService;
 
-    @RequestMapping("logintest")
+    @RequestMapping("logintest.do")
     @ResponseBody
     public String login(User user, HttpServletRequest request){
         //user = userService.selectUserByName(user.getLoginAct());

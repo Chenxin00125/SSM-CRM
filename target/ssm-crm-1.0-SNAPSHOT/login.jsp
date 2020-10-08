@@ -51,11 +51,12 @@
                 },
                 type : "post",
                 success : function (data) {
-                    if(data.flag){
+                    if(data.falg){
                         location.href=data.page;
                     }else{
                         $("#msg").html(data.msg);
                     }
+
                 }
             })
         }
