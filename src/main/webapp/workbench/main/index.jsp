@@ -15,7 +15,6 @@
 
 </head>
 <body>
-	<img src="../static/images/home.png" style="position: relative;top: -10px; left: -10px;"/>
-
+	<img src="static/images/home.png" style="position: relative;top: -10px; left: -10px;"/>
 </body>
 </html>

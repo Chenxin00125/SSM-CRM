@@ -14,10 +14,10 @@
         $(function () {
             $("#btn").click(function () {
                $.ajax({
-                   url : "test/test01",
+                   url : "logintest",
                    data : {
-                       name : "aaa",
-                       loginPwd : "123"
+                       name : $("#loginAct").val(),
+                       loginPwd : $("#loginPwd").val()
                    },
                    type : "post",
                    dataType : "json",
@@ -31,11 +31,11 @@
 </head>
 <body>
 test页面<%=basePath%><br>
-<button id="btn" value="测试">测试</button><br/>
+<%--<button id="btn" value="测试">测试</button><br/>--%>
 <form action="test/test01" method="post"><br/>
-    <input type="text" name="name"><br/>
-    <input type="password" name="loginPwd"><br/>
-    <input type="submit" value="提交">
+    name:<input id="loginAct" type="text" name="loginAct"><br/>
+    loginPwd:<input id="loginPwd" type="password" name="loginPwd"><br/>
+    <input type="button" id="btn" value="提交" >
 </form>
 </body>
 </html>

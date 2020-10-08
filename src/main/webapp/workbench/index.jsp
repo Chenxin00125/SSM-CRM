@@ -59,10 +59,10 @@
 				</div>
 				<div class="modal-body">
 					<div style="position: relative; left: 40px;">
-						姓名：<b>张三</b><br><br>
-						登录帐号：<b>zhangsan</b><br><br>
+						姓名：<b>${user.name}</b><br><br>
+						登录帐号：<b>${user.name}</b><br><br>
 						组织机构：<b>1005，市场部，二级部门</b><br><br>
-						邮箱：<b>zhangsan@bjpowernode.com</b><br><br>
+						邮箱：<b>${user.email}</b><br><br>
 						失效时间：<b>2017-02-14 10:10:10</b><br><br>
 						允许访问IP：<b>127.0.0.1,192.168.100.2</b>
 					</div>
@@ -144,7 +144,7 @@
 			<ul>
 				<li class="dropdown user-dropdown">
 					<a href="javascript:void(0)" style="text-decoration: none; color: white;" class="dropdown-toggle" data-toggle="dropdown">
-						<span class="glyphicon glyphicon-user"></span> zhangsan <span class="caret"></span>
+						<span class="glyphicon glyphicon-user"></span> ${user.name} <span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
 						<li><a href="../settings/index.jsp"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
