@@ -24,8 +24,10 @@ public class LoginFilter implements Filter {
         User user = (User) request.getSession().getAttribute("user");
         if ("/user/login".equals(path) || "/login.jsp".equals(path) || "/index.jsp".equals(path) || user!=null){
             filterChain.doFilter(servletRequest,servletResponse);
+            System.out.println("没被拦截");
         }else{
             response.sendRedirect(request.getContextPath()+"/login.jsp");
+            System.out.println("被拦截");
         }
     }
 

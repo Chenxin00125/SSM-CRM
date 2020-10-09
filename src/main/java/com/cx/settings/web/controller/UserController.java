@@ -49,12 +49,14 @@ public class UserController {
                 if (Utime.compareTo(Ttime) > 0) {
                     request.getSession().setAttribute("user",user);
                     flag = true;
+                }else{
+                    msg = "该账号已过期，请联系专员处理";
                 }
-                msg = "该账号已过期，请联系专员处理";
-            }else{
+            }else {
                 msg = "该未激活，请联系专员处理";
             }
         }
+
         Map map = new HashMap();
         map.put("flag",flag);
         map.put("msg",msg);

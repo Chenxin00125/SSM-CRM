@@ -51,7 +51,7 @@
                 },
                 type : "post",
                 success : function (data) {
-                    if(data.falg){
+                    if(data.flag){
                         location.href=data.page;
                     }else{
                         $("#msg").html(data.msg);
