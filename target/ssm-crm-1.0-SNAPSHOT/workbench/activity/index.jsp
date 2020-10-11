@@ -11,6 +11,7 @@
 	<base href="<%=basePath%>">
 <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
 <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
+<link href="jquery/css/index.css" type="text/css" rel="stylesheet" />
 
 <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
 <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
@@ -42,6 +43,32 @@
 			$("#createActivityModal").modal("show");
 		})
 
+        $(".time").datetimepicker({
+            minView : "month",
+            language : "zh-CN",
+            format : "yyyy-mm-dd",
+			autoclose : true,
+            todayBtn : true,
+            pickerPosition : "bottom-left"
+        });
+
+		//saveActivityForm
+		//saveActivityBtn
+		$("#saveActivityBtn").click(function () {
+			let form = $("#saveActivityForm").serialize();
+			console.log(form);
+			$.ajax({
+				url : "workbench/activity/saveActivity",
+				type : "post",
+				data : form,
+				dataType : "json",
+				contentType : "application/x-www-form-urlencoded",
+				success : function (data) {
+					alert(data);
+				}
+			})
+		})
+
 		$("#editWindow").click(function () {
 			$("#editActivityModal").modal("show");
 		})
@@ -62,41 +89,41 @@
 				</div>
 				<div class="modal-body">
 				
-					<form class="form-horizontal" role="form">
+					<form class="form-horizontal" role="form" id="saveActivityForm">
 					
 						<div class="form-group">
 							<label for="create-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 							<div class="col-sm-10" style="width: 300px;">
-								<select class="form-control" id="create-marketActivityOwner">
+								<select class="form-control" id="create-marketActivityOwner" name="owner">
                                 </select>
 							</div>
                             <label for="create-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="create-marketActivityName">
+                                <input type="text" class="form-control" id="create-marketActivityName" name="name">
                             </div>
 						</div>
 						
 						<div class="form-group">
 							<label for="create-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-startTime">
+								<input type="text" class="form-control time" id="create-startTime" readonly name="startDate">
 							</div>
 							<label for="create-endTime" class="col-sm-2 control-label">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="create-endTime">
+								<input type="text" class="form-control time" id="create-endTime" readonly name="endDate">
 							</div>
 						</div>
                         <div class="form-group">
 
                             <label for="create-cost" class="col-sm-2 control-label">成本</label>
                             <div class="col-sm-10" style="width: 300px;">
-                                <input type="text" class="form-control" id="create-cost">
+                                <input type="text" class="form-control" id="create-cost" name="cost">
                             </div>
                         </div>
 						<div class="form-group">
 							<label for="create-describe" class="col-sm-2 control-label">描述</label>
 							<div class="col-sm-10" style="width: 81%;">
-								<textarea class="form-control" rows="3" id="create-describe"></textarea>
+								<textarea class="form-control" rows="3" id="create-describe" name="description"></textarea>
 							</div>
 						</div>
 						
@@ -105,7 +132,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal">保存</button>
+					<button type="button" class="btn btn-primary" id="saveActivityBtn">保存</button>
 				</div>
 			</div>
 		</div>

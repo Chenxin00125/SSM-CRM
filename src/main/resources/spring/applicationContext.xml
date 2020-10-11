@@ -44,7 +44,7 @@
 
     <tx:advice id="advice" transaction-manager="transactionManager">
         <tx:attributes>
-            <tx:method name="register*" propagation="REQUIRED" isolation="DEFAULT"
+            <tx:method name="save*" propagation="REQUIRED" isolation="DEFAULT"
                        rollback-for="java.lang.NullPointerException"/>
         </tx:attributes>
     </tx:advice>

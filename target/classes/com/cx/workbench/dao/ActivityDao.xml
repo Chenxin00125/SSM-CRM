@@ -9,8 +9,9 @@
 <!--        select id,name,age,email from student-->
 <!--    </select>-->
 
-<!--    <insert id="addStudent">-->
-<!--        insert into student into student values(default,#{name},#{eamil},#{age})-->
-<!--    </insert>-->
+    <insert id="saveActivity">
+        insert into tbl_activity(id,owner,name,startDate,endDate,cost,description,createTime,createBy)
+        values(#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createTime},#{createBy})
+    </insert>
 
 </mapper>
