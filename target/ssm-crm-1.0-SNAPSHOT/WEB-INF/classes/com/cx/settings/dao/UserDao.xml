@@ -13,6 +13,8 @@
         select * from tbl_user where email = #{email} and loginPwd = #{loginPwd}
     </select>
 
-
+    <select id="getUserList" resultType="user">
+        select name ,id from tbl_user
+    </select>
 
 </mapper>

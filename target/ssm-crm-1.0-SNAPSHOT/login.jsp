@@ -13,6 +13,9 @@
     <script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
     <script type="text/javascript" >
         $(function () {
+            if (window.top!=window){
+                window.top.location=window.location;
+            }
             //页面加载完毕后，经用户文本框的内容清空
             $("#loginName").val("");
             //页面加载后input获得光标

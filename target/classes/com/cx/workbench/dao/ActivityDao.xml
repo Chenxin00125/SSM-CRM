@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.cx.workbench.dao.ActivityDao">
+
+
+<!--    <select id="selectAll" resultType="student">-->
+<!--        select id,name,age,email from student-->
+<!--    </select>-->
+
+<!--    <insert id="addStudent">-->
+<!--        insert into student into student values(default,#{name},#{eamil},#{age})-->
+<!--    </insert>-->
+
+</mapper>

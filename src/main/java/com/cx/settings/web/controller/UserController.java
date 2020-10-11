@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static com.cx.util.DateTimeUtil.getSysTime;
@@ -29,9 +30,10 @@ public class UserController {
     public Map login(User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
         user.setLoginPwd(getMD5(user.getLoginPwd()));
         String type = user.getLoginAct();
-        //System.out.println(type);
+        System.out.println(type);
         //含有@走邮箱查询
         if (type.indexOf("@")!=-1){
+            user.setEmail(type);
             user =  userService.selectUserByEmail(user);
         }else{
             user =  userService.selectUserByName(user);
@@ -62,5 +64,12 @@ public class UserController {
         map.put("msg",msg);
         map.put("page","workbench/index.jsp");
         return map;
+    }
+
+    @RequestMapping("getUserList")
+    @ResponseBody
+    public List<User> getUserList(){
+        List<User> userList = userService.getUserList();
+        return userList;
     }
 }
