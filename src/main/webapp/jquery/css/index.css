@@ -1,9 +1,21 @@
-#create-startTime,#create-endTime{
+#create-startTime,#create-endTime,#edit-startTime,#edit-endTime,#search-startTime,#search-endTime{
     background-color:#fff;
 }
 #create-startTime:hover{
     cursor:auto;
 }
 #create-endTime:hover{
+    cursor:auto;
+}
+#edit-startTime:hover{
+    cursor:auto;
+}
+#edit-endTime:hover{
+    cursor:auto;
+}
+#search-startTime:hover{
+    cursor:auto;
+}
+#search-endTime:hover{
     cursor:auto;
 }

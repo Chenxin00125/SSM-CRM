@@ -5,9 +5,44 @@
 <mapper namespace="com.cx.workbench.dao.ActivityDao">
 
 
-<!--    <select id="selectAll" resultType="student">-->
-<!--        select id,name,age,email from student-->
-<!--    </select>-->
+    <select id="getActivityList" resultType="activity">
+        select a.id , a.name , u.name as owner, a.startDate , a.endDate from tbl_activity  a
+            join tbl_user  u on a.owner = u.id
+            <where>
+                <if test="name!=null">
+                    a.name like '%' #{name} '%'
+                </if>
+                <if test="owner!=null">
+                    and u.name like '%' #{owner} '%'
+                </if>
+                <if test="startDate!=null">
+                    and a.startDate &gt; #{startDate}
+                </if>
+                <if test="endDate!=null">
+                    and a.endDate &lt; #{endDate}
+                </if>
+            </where>
+            limit #{startNum},#{pageSize}
+            order by a.createDate desc
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        select count(*) from from tbl_activity  a join tbl_user  u on a.owner = u.id
+            <where>
+                <if test="name!=null">
+                    a.name like '%' #{name} '%'
+                </if>
+                <if test="owner!=null">
+                    and u.name like '%' #{owner} '%'
+                </if>
+                <if test="startDate!=null">
+                    and a.startDate &gt; #{startDate}
+                </if>
+                <if test="endDate!=null">
+                    and a.endDate &lt; #{endDate}
+                </if>
+            </where>
+    </select>
 
     <insert id="saveActivity">
         insert into tbl_activity(id,owner,name,startDate,endDate,cost,description,createTime,createBy)

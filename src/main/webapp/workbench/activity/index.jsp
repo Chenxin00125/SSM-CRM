@@ -22,6 +22,14 @@
 
 	$(function(){
 
+		/*页面加载后分页查询*/
+		//pageList(1,2);
+		/*点击查询按钮分页查询*/
+		$("#searchActivityListBtn").click(function () {
+			pageList(1,2);
+		})
+
+		/*点击创建按钮，查询用户列表*/
 		$("#createWindow").click(function () {
             let length = $("#create-marketActivityOwner").children().length;
             //console.log($("#create-marketActivityOwner").children());
@@ -39,10 +47,17 @@
                     }
                 })
             }
+
+            /*给id为create-marketActivityOwner的select标签添加value属性值，从session中取出
+				默认和从查询到的user列表中的user id作比较，设置为默认option
+			*/
             $("#create-marketActivityOwner").val("${user.id}");
+
+            //打开创建的模块窗口
 			$("#createActivityModal").modal("show");
 		})
 
+		/*添加时间日期插件*/
         $(".time").datetimepicker({
             minView : "month",
             language : "zh-CN",
@@ -52,10 +67,15 @@
             pickerPosition : "bottom-left"
         });
 
-		//saveActivityForm
-		//saveActivityBtn
+
+		/*
+		saveActivityForm
+		saveActivityBtn
+		绑定保存按钮的activity保存事件，发送ajax提交form表单，插入activity
+		* */
 		$("#saveActivityBtn").click(function () {
 			let form = $("#saveActivityForm").serialize();
+			 form = form.replaceAll("+","");
 			console.log(form);
 			$.ajax({
 				url : "workbench/activity/saveActivity",
@@ -64,15 +84,73 @@
 				dataType : "json",
 				contentType : "application/x-www-form-urlencoded",
 				success : function (data) {
-					alert(data);
+					if(data){
+						location.href= "workbench/activity/index.jsp";
+					}else{
+						alert("服务器异常，请稍后重新操作");
+						$("#createActivityModal").modal("hide");
+					}
 				}
 			})
 		})
 
+
+		/*
+		* 绑定修改窗口，
+		* */
+
+
 		$("#editWindow").click(function () {
 			$("#editActivityModal").modal("show");
 		})
+
+
 	});
+	/*
+	 * 1.市场活动2.条件查询分页3.添加修改删除后分页4.点击分页插件后分页
+	 */
+	function pageList(pageNum,pageSize) {
+		let form = $("#searchForm").serialize();
+		pageSize = "pageSize="+pageSize;
+		pageNum = "pageNum=" + pageNum;
+		/*
+		 * 用”“代替serialize()方法获取到的form表单的空字符
+		 */
+		form = form.replaceAll("+","");
+		/*把pageSize和pageNum拼接到form里面*/
+		form = form + "&" +pageNum + "&" +pageSize;
+		console.log(pageNum);
+		console.log(pageSize);
+		console.log(form);
+		$.ajax({
+			url : "workbench/activity/getActivityList",
+			type : "post",
+			data : form,
+			//contentType : "application/x-www-form-urlencoded",
+			dataType : "json",
+			success : function (data) {
+				/*
+				 * data : 两个数据一个是查询道德activity列表
+				 * 				一个是总条数 ：为前台分页插件计算总页数用
+				 */
+				/*
+					拼接tbody
+				 */
+				let html = "";
+				$.each(data.activityList,function (i,activity) {
+					html += '<tr class="active">';
+					html += '<td><input type="checkbox" value="'+activity.id+'" /></td>';
+					html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+activity.name+'</a></td>';
+					html += '<td>'+activity.owner+'</td>';
+					html += '<td>'+activity.startDate+'</td>';
+					html += '<td>'+activity.endDate+'</td>';
+					html += '</tr>'
+				})
+				$("#activityBody").html(html);
+				console.log(data);
+			}
+		})
+	}
 </script>
 </head>
 <body>
@@ -170,11 +248,11 @@
 						<div class="form-group">
 							<label for="edit-startTime" class="col-sm-2 control-label">开始日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-startTime" value="2020-10-10">
+								<input type="text" class="form-control time" id="edit-startTime" readonly value="2020-10-10">
 							</div>
-							<label for="edit-endTime" class="col-sm-2 control-label">结束日期</label>
+							<label for="edit-endTime" class="col-sm-2 control-label ">结束日期</label>
 							<div class="col-sm-10" style="width: 300px;">
-								<input type="text" class="form-control" id="edit-endTime" value="2020-10-20">
+								<input type="text" class="form-control time" id="edit-endTime" readonly value="2020-10-20">
 							</div>
 						</div>
 						
@@ -217,19 +295,19 @@
 		<div style="width: 100%; position: absolute;top: 5px; left: 10px;">
 		
 			<div class="btn-toolbar" role="toolbar" style="height: 80px;">
-				<form class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
+				<form id="searchForm" class="form-inline" role="form" style="position: relative;top: 8%; left: 5px;">
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">名称</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" name="name">
 				    </div>
 				  </div>
 				  
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">所有者</div>
-				      <input class="form-control" type="text">
+				      <input class="form-control" type="text" name="owner">
 				    </div>
 				  </div>
 
@@ -237,17 +315,17 @@
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">开始日期</div>
-					  <input class="form-control" type="text" id="startTime" />
+					  <input class="form-control time" type="text" id="search-startTime" readonly name="startDate">
 				    </div>
 				  </div>
 				  <div class="form-group">
 				    <div class="input-group">
 				      <div class="input-group-addon">结束日期</div>
-					  <input class="form-control" type="text" id="endTime">
+					  <input class="form-control time" type="text" id="search-endTime" readonly name="endDate">
 				    </div>
 				  </div>
 				  
-				  <button type="submit" class="btn btn-default">查询</button>
+				  <button type="button" class="btn btn-default" id="searchActivityListBtn">查询</button>
 				  
 				</form>
 			</div>
@@ -270,21 +348,8 @@
 							<td>结束日期</td>
 						</tr>
 					</thead>
-					<tbody>
-						<tr class="active">
-							<td><input type="checkbox" /></td>
-							<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/detail.jsp';">发传单</a></td>
-                            <td>zhangsan</td>
-							<td>2020-10-10</td>
-							<td>2020-10-20</td>
-						</tr>
-                        <tr class="active">
-                            <td><input type="checkbox" /></td>
-                            <td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href='workbench/activity/detail.jsp';">发传单</a></td>
-                            <td>zhangsan</td>
-                            <td>2020-10-10</td>
-                            <td>2020-10-20</td>
-                        </tr>
+					<tbody id="activityBody">
+
 					</tbody>
 				</table>
 			</div>
