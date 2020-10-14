@@ -9,39 +9,40 @@
         select a.id , a.name , u.name as owner, a.startDate , a.endDate from tbl_activity  a
             join tbl_user  u on a.owner = u.id
             <where>
-                <if test="name!=null">
-                    a.name like '%' #{name} '%'
+                <if test="activity.name!=null and activity.name!='' ">
+                    a.name like '%' #{activity.name} '%'
                 </if>
-                <if test="owner!=null">
-                    and u.name like '%' #{owner} '%'
+                <if test="activity.owner!=null and activity.owner!=''">
+                    and u.name like '%' #{activity.owner} '%'
                 </if>
-                <if test="startDate!=null">
-                    and a.startDate &gt; #{startDate}
+                <if test="activity.startDate!=null and activity.startDate!=''">
+                    and a.startDate &gt;= #{activity.startDate}
                 </if>
-                <if test="endDate!=null">
-                    and a.endDate &lt; #{endDate}
+                <if test="activity.endDate!=null and activity.endDate!=''">
+                    and a.endDate &lt;= #{activity.endDate}
                 </if>
             </where>
+            ORDER BY a.createTime DESC
             limit #{startNum},#{pageSize}
-            order by a.createDate desc
+
     </select>
 
     <select id="getTotalCount" resultType="int">
-        select count(*) from from tbl_activity  a join tbl_user  u on a.owner = u.id
-            <where>
-                <if test="name!=null">
-                    a.name like '%' #{name} '%'
-                </if>
-                <if test="owner!=null">
-                    and u.name like '%' #{owner} '%'
-                </if>
-                <if test="startDate!=null">
-                    and a.startDate &gt; #{startDate}
-                </if>
-                <if test="endDate!=null">
-                    and a.endDate &lt; #{endDate}
-                </if>
-            </where>
+        select count(*) from  tbl_activity  a join tbl_user  u on a.owner = u.id
+        <where>
+            <if test="name!=null and name!='' ">
+                a.name like '%' #{name} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="startDate!=null and startDate!=''">
+                and a.startDate &gt;= #{startDate}
+            </if>
+            <if test="endDate!=null and endDate!=''">
+                and a.endDate &lt;= #{endDate}
+            </if>
+        </where>
     </select>
 
     <insert id="saveActivity">
@@ -49,4 +50,13 @@
         values(#{id},#{owner},#{name},#{startDate},#{endDate},#{cost},#{description},#{createTime},#{createBy})
     </insert>
 
+    <select id="getActivityById" resultType="activity">
+        select id , name , owner, startDate , endDate , cost , description from tbl_activity
+           where id = #{id}
+    </select>
+
+    <update id="editActivityById">
+        update  tbl_activity set name = #{name} , owner = #{owner}, startDate = #{startDate} , endDate = #{endDate} , cost = #{cost}, description = #{description},editTime = #{editTime}, editBy = #{editBy}
+            where id = #{id}
+    </update>
 </mapper>

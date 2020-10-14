@@ -34,4 +34,16 @@ public class ActivityServiceImpl implements ActivityService {
         List<Activity> activityList = activityDao.getActivityList(activity,startNum,pageSize);
         return activityList;
     }
+
+    @Override
+    public Activity getActivityById(String id) {
+        Activity activity = activityDao.getActivityById(id);
+        return activity;
+    }
+
+    @Override
+    public int editActivityById(Activity activity) {
+        int num = activityDao.editActivityById(activity);
+        return num;
+    }
 }

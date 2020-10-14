@@ -13,4 +13,10 @@ public interface ActivityService {
 
     //获取activityList（包含条件）
     List<Activity> getActivityList(Activity activity, int pageSize, int pageNum);
+
+    //根据id查询activity
+    Activity getActivityById(String id);
+
+    //根据id修改activity
+    int editActivityById(Activity activity);
 }
