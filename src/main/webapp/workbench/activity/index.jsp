@@ -11,7 +11,7 @@
     <base href="<%=basePath%>">
     <link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
     <link href="jquery/bootstrap-datetimepicker-master/css/bootstrap-datetimepicker.min.css" type="text/css" rel="stylesheet" />
-    <link href="jquery/css/index.css" type="text/css" rel="stylesheet" />
+    <link href="jquery/css/time.css" type="text/css" rel="stylesheet" />
     <link rel="stylesheet" type="text/css" href="jquery/bs_pagination/jquery.bs_pagination.min.css">
 
     <script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>

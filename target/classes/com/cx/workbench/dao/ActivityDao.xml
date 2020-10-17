@@ -55,6 +55,10 @@
            where id = #{id}
     </select>
 
+    <select id="detailActivityById" resultType="activity">
+        select * from tbl_activity where id = #{id}
+    </select>
+
     <update id="editActivityById">
         update  tbl_activity set name = #{name} , owner = #{owner}, startDate = #{startDate} , endDate = #{endDate} , cost = #{cost}, description = #{description},editTime = #{editTime}, editBy = #{editBy}
             where id = #{id}

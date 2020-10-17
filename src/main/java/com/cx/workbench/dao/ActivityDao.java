@@ -20,4 +20,8 @@ public interface ActivityDao {
 
     //根据id修改activity
     int editActivityById(Activity activity);
+
+    //根据id查询activity关联user表
+    Activity detailActivityById(String id);
+
 }

@@ -1,6 +1,7 @@
 package com.cx.workbench.web.controller;
 
 import com.cx.settings.domain.User;
+import com.cx.settings.service.UserService;
 import com.cx.workbench.domain.Activity;
 import com.cx.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +24,8 @@ public class ActivityController {
 
     @Autowired
     private ActivityService activityService;
+    @Autowired
+    private UserService userService;
 
     @RequestMapping("saveActivity")
     @ResponseBody
@@ -63,16 +66,38 @@ public class ActivityController {
         return modelAndView;
     }
 
-    @RequestMapping("getActivity")
+    @RequestMapping("getActivityById")
     @ResponseBody
-    public Activity editActivity(String id){
+    public Activity getActivityById(String id){
         Activity activity = activityService.getActivityById(id);
         return activity;
     }
 
+    @RequestMapping("detailActivityById")
+    public ModelAndView detailActivityById(String id){
+        Activity activity = activityService.detailActivityById(id);
+        ModelAndView modelAndView = new ModelAndView();
+        List<User> userList = userService.getUserList();
+        for (User user:userList ) {
+            if (user.getId().equals(activity.getOwner())){
+                activity.setOwner(user.getName());
+            }
+            if(user.getId().equals(activity.getCreateBy())){
+                activity.setCreateBy(user.getName());
+            }
+            if(user.getId().equals(activity.getEditBy())){
+                activity.setEditBy(user.getName());
+            }
+        }
+        modelAndView.addObject("activity",activity);
+        modelAndView.setViewName("activity/detail");
+        return modelAndView;
+    }
+
     @RequestMapping("editActivity")
     @ResponseBody
-    public boolean editActivity(Activity activity,HttpServletRequest request){
+    public Map editActivity(Activity activity,HttpServletRequest request){
+        Map map = new HashMap();
         boolean flag = false;
         activity.setEditTime(getSysTime());
         User user = (User)request.getSession().getAttribute("user");
@@ -81,7 +106,9 @@ public class ActivityController {
         int num = activityService.editActivityById(activity);
         if (num==1){
             flag = true;
+            map.put("activity",activity);
         }
-        return flag;
+        map.put("flag",flag);
+        return map;
     }
 }

@@ -107,13 +107,14 @@ $(function(){
             }
             let id = $(inputName).val();
             $.ajax({
-                url : "workbench/activity/getActivity",
+                url : "workbench/activity/getActivityById",
                 type : "get",
                 data : {
                     "id" : id
                 },
                 dataType : "json",
                 success : function (data) {
+                    console.log(data);
                     $("#edit-marketActivityName").val(data.name);
                     $("#edit-startTime").val(data.startDate);
                     $("#edit-endTime").val(data.endDate);
@@ -144,7 +145,7 @@ $(function(){
             dataType : "json",
             contentType : "application/x-www-form-urlencoded",
             success : function (data) {
-                if(data){
+                if(data.flag){
                     $("#editActivityModal").modal("hide");
                     pageList(1,2);
                 }else{
@@ -226,7 +227,7 @@ function pageList(pageNum,pageSize) {
             $.each(data.activityList,function (i,activity) {
                 html += '<tr class="active">';
                 html += '<td><input type="checkbox" class="inputName" value="'+activity.id+'" /></td>';
-                html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="window.location.href=\'workbench/activity/detail.jsp\';">'+activity.name+'</a></td>';
+                html += '<td><a style="text-decoration: none; cursor: pointer;" onclick="href = \'workbench/activity/detailActivityById?id='+activity.id+'\'">'+activity.name+'</a></td>';
                 html += '<td>'+activity.owner+'</td>';
                 html += '<td>'+activity.startDate+'</td>';
                 html += '<td>'+activity.endDate+'</td>';
