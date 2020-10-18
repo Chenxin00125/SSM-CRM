@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
 	String basePath = request.getScheme() + "://"
 			+ request.getServerName() + ":"
@@ -23,6 +24,7 @@
 
 	<script type="text/javascript">
 
+
 		//默认情况下取消和保存按钮是隐藏的
 		var cancelAndSaveBtnDefault = true;
 
@@ -38,6 +40,8 @@
 				pickerPosition : "bottom-left"
 			});
 
+			/*获取user列表*/
+            // getUserList();
 
 			$("#remark").focus(function(){
 				if(cancelAndSaveBtnDefault){
@@ -77,26 +81,8 @@
 
 			/*绑定编辑按钮*/
 			$("#editWindow").click(function () {
-				let length = $("#edit-marketActivityOwner").children().length;
-				//console.log($("#edit-marketActivityOwner"));
-				if(length==0){
-					$.ajax({
-						url : "user/getUserList",
-						type : "get",
-						dataType : "json",
-						async:false,
-						success : function (data) {
-							$.each(data ,function(i,user){
-								$("#edit-marketActivityOwner").append("<option value="+user.id+">"+user.name+"</option>");
-								$("#editActivityModal").append("<input type='hidden' id='"+ user.id+"' value='"+user.name+"'>")
-								let name = user.name;
-								if(name==("${activity.owner}")){
-									$("#edit-marketActivityOwner").val(user.id);
-								}
-							})
-						}
-					})
-				}
+
+
 				$("#editActivityModal").modal("show");
 			})
 
@@ -121,6 +107,7 @@
 							$("#titleName").html("市场活动-"+data.activity.name+"<small>"+data.activity.startDate+" ~ "+data.activity.endDate+"</small>")
 							$("#afterOwner").html($("#"+data.activity.owner+"").val());
 							$("#afterName").html(data.activity.name);
+							$("#afterName1").html(data.activity.name);
 							$("#afterStartDate").html(data.activity.startDate);
 							$("#afterEndDate").html(data.activity.endDate);
 							$("#afterCost").html(data.activity.cost);
@@ -137,6 +124,21 @@
 			})
 		});
 
+		/*设置一个timeout避免页面加载过慢而js找不到东西*/
+        setTimeout(function () {
+			$("#edit-marketActivityOwner").val("${activity.owner}");
+            $.each($("#edit-marketActivityOwner").children(),function(i,child){
+            	let childValue = $(child).attr("value");
+                if( childValue =="${activity.owner}"){
+                    $("#afterOwner").html($(child).text());
+                }
+                /*备注附上user值*/
+                $("."+childValue).html($(child).text());
+            })
+
+        },200)
+
+
 	</script>
 
 </head>
@@ -146,6 +148,7 @@
 <div class="modal fade" id="editRemarkModal" role="dialog">
 	<%-- 备注的id --%>
 	<input type="hidden" id="remarkId" >
+
 	<div class="modal-dialog" role="document" style="width: 40%;">
 		<div class="modal-content">
 			<div class="modal-header">
@@ -190,6 +193,9 @@
 						<label for="edit-marketActivityOwner" class="col-sm-2 control-label">所有者<span style="font-size: 15px; color: red;">*</span></label>
 						<div class="col-sm-10" style="width: 300px;">
 							<select class="form-control" id="edit-marketActivityOwner"  name="owner">
+                                <c:forEach begin="0" end="${userList.size()}" step="1" items="${userList}" var="user">
+                                    <option value="${user.id}">${user.name}</option>
+                                </c:forEach>
 							</select>
 						</div>
 						<label for="edit-marketActivityName" class="col-sm-2 control-label">名称<span style="font-size: 15px; color: red;">*</span></label>
@@ -245,7 +251,7 @@
 		<h3 id="titleName">市场活动-${activity.name}<small>${activity.startDate} ~ ${activity.endDate}</small></h3>
 	</div>
 	<div style="position: relative; height: 50px; width: 250px;  top: -72px; left: 700px;">
-		<button type="button" class="btn btn-default" data-toggle="modal" id="editWindow"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
+		<button type="button" class="btn btn-default" data-toggle="modal" data-target="#editActivityModal"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
 		<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 	</div>
 </div>
@@ -254,7 +260,7 @@
 <div style="position: relative; top: -70px;">
 	<div style="position: relative; left: 40px; height: 30px;">
 		<div style="width: 300px; color: gray;">所有者</div>
-		<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b id="afterOwner">${activity.owner}</b></div>
+		<div style="width: 300px;position: relative; left: 200px; top: -20px;"><b id="afterOwner"></b></div>
 		<div style="width: 300px;position: relative; left: 450px; top: -40px; color: gray;">名称</div>
 		<div style="width: 300px;position: relative; left: 650px; top: -60px;"><b id="afterName">${activity.name}</b></div>
 		<div style="height: 1px; width: 400px; background: #D5D5D5; position: relative; top: -60px;"></div>
@@ -301,33 +307,24 @@
 		<h4>备注</h4>
 	</div>
 
+		<c:forEach begin="0" end="${remarkList.size()}" step="1" items="${remarkList}" var="remark">
+			<div class="remarkDiv" style="height: 60px;">
+				<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">
+				<div style="position: relative; top: -40px; left: 40px;" >
+					<h5>${remark.noteContent}</h5>
+					<input type="hidden" name="id" value="${remark.id}">
+					<font color="gray">市场活动</font> <font color="gray">-</font> <b id="afterName1">${activity.name}</b>
+					<small style="color: gray;">&nbsp;&nbsp;&nbsp;${remark.editFlag==1?remark.editTime:remark.createTime}&nbsp;&nbsp;&nbsp;由</small>
+					<small style="color: gray;" class="${remark.editFlag==1?remark.editBy:remark.createBy}"></small>
+					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					</div>
+				</div>
+			</div>
+		</c:forEach>
 	<!-- 备注1 -->
-	<div class="remarkDiv" style="height: 60px;">
-		<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">
-		<div style="position: relative; top: -40px; left: 40px;" >
-			<h5>哎呦！</h5>
-			<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-			<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-			</div>
-		</div>
-	</div>
-
-	<!-- 备注2 -->
-	<div class="remarkDiv" style="height: 60px;">
-		<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">
-		<div style="position: relative; top: -40px; left: 40px;" >
-			<h5>呵呵！</h5>
-			<font color="gray">市场活动</font> <font color="gray">-</font> <b>发传单</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-			<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-			</div>
-		</div>
-	</div>
 
 	<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 		<form role="form" style="position: relative;top: 10px; left: 10px;">

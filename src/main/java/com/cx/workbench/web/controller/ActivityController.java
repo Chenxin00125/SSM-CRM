@@ -3,6 +3,8 @@ package com.cx.workbench.web.controller;
 import com.cx.settings.domain.User;
 import com.cx.settings.service.UserService;
 import com.cx.workbench.domain.Activity;
+import com.cx.workbench.domain.ActivityRemark;
+import com.cx.workbench.service.ActivityRemarkService;
 import com.cx.workbench.service.ActivityService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,8 @@ public class ActivityController {
     private ActivityService activityService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ActivityRemarkService remarkService;
 
     @RequestMapping("saveActivity")
     @ResponseBody
@@ -78,10 +82,8 @@ public class ActivityController {
         Activity activity = activityService.detailActivityById(id);
         ModelAndView modelAndView = new ModelAndView();
         List<User> userList = userService.getUserList();
+        List<ActivityRemark> remarkList = remarkService.selectRemarkByActivityId(id);
         for (User user:userList ) {
-            if (user.getId().equals(activity.getOwner())){
-                activity.setOwner(user.getName());
-            }
             if(user.getId().equals(activity.getCreateBy())){
                 activity.setCreateBy(user.getName());
             }
@@ -89,6 +91,9 @@ public class ActivityController {
                 activity.setEditBy(user.getName());
             }
         }
+
+        modelAndView.addObject("userList",userList);
+        modelAndView.addObject("remarkList",remarkList);
         modelAndView.addObject("activity",activity);
         modelAndView.setViewName("activity/detail");
         return modelAndView;
