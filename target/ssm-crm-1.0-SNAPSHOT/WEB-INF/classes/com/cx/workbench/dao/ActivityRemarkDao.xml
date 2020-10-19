@@ -13,4 +13,13 @@
         insert into student into student values(default,#{name},#{eamil},#{age})
     </insert>
 
+    <delete id="deleteById">
+        delete from tbl_activity_remark where id = #{id}
+    </delete>
+
+    <update id="updateById">
+        update tbl_activity_remark set noteContent = #{noteContent},editTime = #{editTime} , editBy = #{editBy},editFlag = #{editFlag}
+            where id = #{id}
+    </update>
+
 </mapper>

@@ -21,4 +21,16 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         List<ActivityRemark> remarkList = remarkDao.selectRemarkByActivityId(activityId);
         return remarkList;
     }
+
+    @Override
+    public int deleteById(String id) {
+        int num = remarkDao.deleteById(id);
+        return num;
+    }
+
+    @Override
+    public int updateById(ActivityRemark activityRemark) {
+        int num = remarkDao.updateById(activityRemark);
+        return num;
+    }
 }

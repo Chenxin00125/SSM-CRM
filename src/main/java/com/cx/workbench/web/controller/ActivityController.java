@@ -116,4 +116,20 @@ public class ActivityController {
         map.put("flag",flag);
         return map;
     }
+
+    @RequestMapping("editRemark")
+    @ResponseBody
+    public boolean editRemark(ActivityRemark activityRemark,HttpServletRequest request){
+        boolean flag = false;
+        activityRemark.setEditTime(getSysTime());
+        User user = (User)request.getSession().getAttribute("user");
+        activityRemark.setEditBy(user.getId());
+        activityRemark.setEditFlag("1");
+        System.out.println(activityRemark);
+        int num = remarkService.updateById(activityRemark);
+        if (num==1){
+            flag = true;
+        }
+        return flag;
+    }
 }

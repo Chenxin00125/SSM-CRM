@@ -28,6 +28,14 @@
 		//默认情况下取消和保存按钮是隐藏的
 		var cancelAndSaveBtnDefault = true;
 
+		function hiden(){
+			$("#remark").val("");
+			$("#remark").focusout();
+			$("#cancelAndSaveBtn").hide();
+			//设置remarkDiv的高度为130px
+			$("#remarkDiv").css("height","90px");
+			cancelAndSaveBtnDefault = true;
+		}
 		$(function(){
 
 			/*添加时间日期插件*/
@@ -53,12 +61,15 @@
 				}
 			});
 
+
+
 			$("#cancelBtn").click(function(){
 				//显示
 				$("#cancelAndSaveBtn").hide();
 				//设置remarkDiv的高度为130px
 				$("#remarkDiv").css("height","90px");
 				cancelAndSaveBtnDefault = true;
+				$("#remark").val("");
 			});
 
 			$(".remarkDiv").mouseover(function(){
@@ -76,7 +87,6 @@
 			$(".myHref").mouseout(function(){
 				$(this).children("span").css("color","#E6E6E6");
 			});
-
 
 
 			/*绑定编辑按钮*/
@@ -107,7 +117,6 @@
 							$("#titleName").html("市场活动-"+data.activity.name+"<small>"+data.activity.startDate+" ~ "+data.activity.endDate+"</small>")
 							$("#afterOwner").html($("#"+data.activity.owner+"").val());
 							$("#afterName").html(data.activity.name);
-							$("#afterName1").html(data.activity.name);
 							$("#afterStartDate").html(data.activity.startDate);
 							$("#afterEndDate").html(data.activity.endDate);
 							$("#afterCost").html(data.activity.cost);
@@ -124,20 +133,65 @@
 			})
 		});
 
+		/*设置一个timeout避免页面加载过慢而js找不到东西*/
         setTimeout(function () {
 			$("#edit-marketActivityOwner").val("${activity.owner}");
-
-
             $.each($("#edit-marketActivityOwner").children(),function(i,child){
             	let childValue = $(child).attr("value");
                 if( childValue =="${activity.owner}"){
                     $("#afterOwner").html($(child).text());
                 }
+                /*备注附上user值*/
                 $("."+childValue).html($(child).text());
             })
 
         },200)
 
+		function bjRemark(id) {
+        	//alert(id);
+			let text = $("#"+id).text();
+			//alert(text);
+			$("#remark").focus();
+			$("#remark").val(text);
+
+			/*给之前的点击事件解绑*/
+            $("#save-remark").off("click");
+			$("#save-remark").on("click",function () {
+				let noteContent = $.trim($("#remark").val());
+				if(noteContent==""){
+					alert("不能修改为空");
+				}else{
+					$.ajax({
+						url : "workbench/activity/editRemark",
+						type : "post",
+						data : {
+							"id" : id,
+							"noteContent" : noteContent
+						},
+						dataType : "json",
+						success : function (data) {
+							if(data){
+								$("#"+id).html(noteContent);
+								/*修改完成获取当前时间给备注时间显示*/
+								let date = (new Date()).toLocaleDateString().replaceAll("/","-")
+								let time = (new Date()).getHours()+":"+(new Date()).getMinutes()+":"+(new Date()).getSeconds();
+								$("#"+id+"time").html(date+"&nbsp;"+time);
+								$("#"+id+"ByUser").html("${sessionScope.user.name}");
+								hiden();
+							}else{
+								alert("系统繁忙，请稍后重试");
+								$("#remark").val(noteContent);
+								$("#remark").focus();
+							}
+						}
+					})
+				}
+			})
+		}
+
+       // setTimeout(()=>{
+		//
+	   // },200)
 
 	</script>
 
@@ -311,27 +365,25 @@
 			<div class="remarkDiv" style="height: 60px;">
 				<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">
 				<div style="position: relative; top: -40px; left: 40px;" >
-					<h5>${remark.noteContent}</h5>
-					<input type="hidden" name="id" value="${remark.id}">
-					<font color="gray">市场活动</font> <font color="gray">-</font> <b id="afterName1">${activity.name}</b>
-					<small style="color: gray;">&nbsp;&nbsp;&nbsp;${remark.editFlag==1?remark.editTime:remark.createTime}&nbsp;&nbsp;&nbsp;由</small>
-					<small style="color: gray;" class="${remark.editFlag==1?remark.editBy:remark.createBy}"></small>
+					<h5 id="${remark.id}">${remark.noteContent}</h5>
+					<font color="gray">市场活动</font> <font color="gray">-</font> <b id="afterName1">${activity.name}</b>&nbsp;&nbsp;&nbsp;
+					<small style="color: gray;" id="${remark.id}time">${remark.editFlag==1?remark.editTime:remark.createTime}</small><small>&nbsp;&nbsp;&nbsp;由</small>
+					<small style="color: gray;" id="${remark.id}ByUser" class="${remark.editFlag==1?remark.editBy:remark.createBy}"></small>
 					<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+						<a class="myHref" href="javascript:void(0);" onclick="bjRemark('${remark.id}')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
 						&nbsp;&nbsp;&nbsp;&nbsp;
 						<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
 					</div>
 				</div>
 			</div>
 		</c:forEach>
-	<!-- 备注1 -->
 
 	<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 		<form role="form" style="position: relative;top: 10px; left: 10px;">
 			<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 			<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 				<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-				<button type="button" class="btn btn-primary">保存</button>
+				<button type="button" class="btn btn-primary" id="save-remark">保存</button>
 			</p>
 		</form>
 	</div>
