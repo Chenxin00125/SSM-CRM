@@ -69,7 +69,6 @@
 				//设置remarkDiv的高度为130px
 				$("#remarkDiv").css("height","90px");
 				cancelAndSaveBtnDefault = true;
-				$("#remark").val("");
 			});
 
 			$(".remarkDiv").mouseover(function(){
@@ -160,7 +159,9 @@
 				let noteContent = $.trim($("#remark").val());
 				if(noteContent==""){
 					alert("不能修改为空");
-				}else{
+				}else if(noteContent==text){
+				    alert("您还没有修改内容");
+                } else{
 					$.ajax({
 						url : "workbench/activity/editRemark",
 						type : "post",
@@ -173,11 +174,16 @@
 							if(data){
 								$("#"+id).html(noteContent);
 								/*修改完成获取当前时间给备注时间显示*/
+                                //获取当前日期
 								let date = (new Date()).toLocaleDateString().replaceAll("/","-")
+                                //获取当前时间 ，时 分 秒
 								let time = (new Date()).getHours()+":"+(new Date()).getMinutes()+":"+(new Date()).getSeconds();
 								$("#"+id+"time").html(date+"&nbsp;"+time);
 								$("#"+id+"ByUser").html("${sessionScope.user.name}");
-								hiden();
+								$("#remark").val("修改成功");
+								setTimeout(function () {
+                                    hiden();
+                                },4000)
 							}else{
 								alert("系统繁忙，请稍后重试");
 								$("#remark").val(noteContent);
@@ -188,10 +194,6 @@
 				}
 			})
 		}
-
-       // setTimeout(()=>{
-		//
-	   // },200)
 
 	</script>
 
