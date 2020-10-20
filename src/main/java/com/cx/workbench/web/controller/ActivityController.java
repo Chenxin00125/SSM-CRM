@@ -160,8 +160,8 @@ public class ActivityController {
         int num = remarkService.addRemark(activityRemark);
         if (num==1){
             flag = true;
-            List<ActivityRemark> remarkList = remarkService.selectRemarkByActivityId(id);
-            map.put("remarkList",remarkList);
+            //List<ActivityRemark> remarkList = remarkService.selectRemarkByActivityId(id);
+            map.put("activityRemark",activityRemark);
         }
         map.put("flag",flag);
         return map;

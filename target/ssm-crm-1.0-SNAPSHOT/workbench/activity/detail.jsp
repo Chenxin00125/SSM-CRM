@@ -74,22 +74,21 @@
                 cancelAndSaveBtnDefault = true;
             });
 
-            $(".remarkDiv").mouseover(function(){
+            $("#remarkBody").on("mouseover",".remarkDiv",function(){
                 $(this).children("div").children("div").show();
             });
 
-            $(".remarkDiv").mouseout(function(){
+            $("#remarkBody").on("mouseout",".remarkDiv",function(){
                 $(this).children("div").children("div").hide();
             });
 
-            $(".myHref").mouseover(function(){
+            $("#remarkBody").on("mouseover",".myHref",function(){
                 $(this).children("span").css("color","red");
             });
 
-            $(".myHref").mouseout(function(){
+            $("#remarkBody").on("mouseout",".myHref",function(){
                 $(this).children("span").css("color","#E6E6E6");
             });
-
             /*绑定删除按钮*/
             $("#deleteActivity").click(function () {
                 if (confirm("确定删除该活动吗")){
@@ -110,8 +109,6 @@
                             }
                         }
                     })
-                }else {
-                    alert(2)
                 }
             })
 
@@ -189,25 +186,18 @@
                             $("#remark").val("添加备注成功");
                             let time = remark.editFlag==1?remark.editTime:remark.createTime;
 
-                            html += '<div class="remarkDiv" style="height: 60px;">';
+                            html += '<div class="remarkDiv" id="'+remark.id+'div" style="height: 60px;">';
                             html += '<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">';
                             html += '<div style="position: relative; top: -40px; left: 40px;" >';
                             html += '<h5 id="'+remark.id+'">'+remark.noteContent+'</h5>';
                             html += '<font color="gray">市场活动</font> <font color="gray">-</font> <b>'+"${activity.name}"+'</b>&nbsp;&nbsp;&nbsp;';
                             html += '<small style="color: gray;" id="'+remark.id+'time">'+time+'</small><small>&nbsp;&nbsp;&nbsp;&nbsp;由 </small>';
                             html += '<small style="color: gray;" id="'+remark.id+'ByUser" class="'+"${sessionScope.user.id}"+'">'+"${sessionScope.user.name}"+'</small>';
-                            html += '<div id="'+ remark.id+'new">';
-                            html += '<a class="myHref" href="javascript:void(0);" onclick="bjRemark(\''+remark.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>';
-                            html += '<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>';
+                            html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px;display: none" >';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="bjRemark(\''+remark.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;';
+                            html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\''+remark.id+'\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>';
                             html += '</div></div></div>';
                             $("#remarkAfter").after(html);
-                            $("#"+remark.id+"new").css({"position" : "relative", "left ": "500px", "top" : "-30px", "height" : "30px", "width" : "100px", "display": ""});
-                            // $(".remarkDiv").mouseover(function(){
-                            //     $("#remark").children("div[id="+remark.id+"new]").show();
-                            // });
-                            // $(".remarkDiv").mouseout(function(){
-                            //     $("#remark").children("div[id="+remark.id+"new]").hide();
-                            // });
                             setTimeout(function () {
                                 hiden();
                             },4000)
@@ -287,23 +277,23 @@
         }
 
         function deleteRemark(id) {
-                if(confirm("确定删除该备注吗")){
-                    $.ajax({
-                        url : "workbench/activity/deleteRemark",
-                        type : "post",
-                        data : {
-                            "id" : id
-                        },
-                        dataType : "json",
-                        success : function (data) {
-                            if(data.flag){
-                                $("#"+id+"div").html("");
-                            }else{
-                                alert("系统繁忙，请稍后重试");
-                            }
+            if(confirm("确定删除该备注吗")){
+                $.ajax({
+                    url : "workbench/activity/deleteRemark",
+                    type : "post",
+                    data : {
+                        "id" : id
+                    },
+                    dataType : "json",
+                    success : function (data) {
+                        if(data.flag){
+                            $("#"+id+"div").remove();
+                        }else{
+                            alert("系统繁忙，请稍后重试");
                         }
-                    })
-                }
+                    }
+                })
+            }
         }
 
 
