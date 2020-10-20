@@ -64,10 +64,22 @@ public class ActivityController {
 
     @RequestMapping("deleteActivity")
     @ResponseBody
-    public ModelAndView deleteActivity(String ids){
-        ModelAndView modelAndView = new ModelAndView();
+    public boolean deleteActivity(String ids){
         String[] id = ids.split(",");
-        return modelAndView;
+        boolean flag = false;
+        int aNum = 0;
+        int a = 0;
+        for ( int i = 0 ;i < id.length ; i++){
+            int b = remarkService.deleteByActivityId(id[i]);
+            int num = activityService.deleteActivity(id[i]);
+            aNum = aNum + num;
+            a = a + b;
+        }
+        System.out.println(aNum+"---"+a);
+        if (aNum>=1){
+            flag = true;
+        }
+        return flag;
     }
 
     @RequestMapping("getActivityById")
@@ -131,5 +143,40 @@ public class ActivityController {
             flag = true;
         }
         return flag;
+    }
+
+    @RequestMapping("addRemark")
+    @ResponseBody
+    public Map addRemark(ActivityRemark activityRemark){
+        Map map = new HashMap();
+        boolean flag = false;
+        String id = activityRemark.getActivityId();
+        activityRemark.setCreateTime(getSysTime());
+        activityRemark.setId(getUUID());
+        activityRemark.setEditFlag("0");
+        activityRemark.setEditBy(null);
+        activityRemark.setEditTime(null);
+        //System.out.println(activityRemark);
+        int num = remarkService.addRemark(activityRemark);
+        if (num==1){
+            flag = true;
+            List<ActivityRemark> remarkList = remarkService.selectRemarkByActivityId(id);
+            map.put("remarkList",remarkList);
+        }
+        map.put("flag",flag);
+        return map;
+    }
+
+    @RequestMapping("deleteRemark")
+    @ResponseBody
+    public Map deleteRemark(String id){
+        boolean flag = false;
+        Map map = new HashMap();
+        int num = remarkService.deleteById(id);
+        if (num == 1){
+            flag = true;
+        }
+        map.put("flag",flag);
+        return map;
     }
 }

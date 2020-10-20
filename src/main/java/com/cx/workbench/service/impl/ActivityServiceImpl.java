@@ -52,4 +52,12 @@ public class ActivityServiceImpl implements ActivityService {
         Activity activity = activityDao.detailActivityById(id);
         return activity;
     }
+
+    @Override
+    public int deleteActivity(String id) {
+        int num = activityDao.deleteActivity(id);
+        return num;
+    }
+
+
 }

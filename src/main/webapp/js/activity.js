@@ -165,6 +165,7 @@ $(function(){
 
     /*绑定删除按钮*/
     $("#deleteBtn").click(function () {
+        if(confirm("确定删除选择的活动吗")){
         /*获取到打勾的复选框的jQuery对象*/
         let inputName = $("input[class=inputName]:checked");
         let ids = "";
@@ -172,7 +173,7 @@ $(function(){
             for (let i = 0; i <inputName.length; i++) {
                 ids = $(inputName[i]).val()+ "," +ids ;
             }
-            console.log(ids);
+            //console.log(ids);
             $.ajax({
                 url : "workbench/activity/deleteActivity",
                 type : "post",
@@ -181,11 +182,17 @@ $(function(){
                 },
                 dataType : "json",
                 success : function (data) {
-                    alert(data);
+                    if(data){
+                        alert("删除活动成功");
+                        pageList(1,2);
+                    }else{
+                        alert("服务器异常，请稍后重新操作");
+                    }
                 }
             })
         }else{
             alert("请选择要删除的活动");
+        }
         }
     })
 });

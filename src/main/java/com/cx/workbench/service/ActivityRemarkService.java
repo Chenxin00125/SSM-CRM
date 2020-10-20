@@ -14,4 +14,10 @@ public interface ActivityRemarkService {
 
     //修改备注
     int updateById(ActivityRemark activityRemark);
+
+    //添加备注
+    int addRemark(ActivityRemark activityRemark);
+
+    //根据activityID删除备注
+    int deleteByActivityId(String id);
 }

@@ -33,4 +33,16 @@ public class ActivityRemarkServiceImpl implements ActivityRemarkService {
         int num = remarkDao.updateById(activityRemark);
         return num;
     }
+
+    @Override
+    public int addRemark(ActivityRemark activityRemark) {
+        int num = remarkDao.addRemark(activityRemark);
+        return num;
+    }
+
+    @Override
+    public int deleteByActivityId(String id) {
+        int num = remarkDao.deleteByActivityId(id);
+        return num;
+    }
 }

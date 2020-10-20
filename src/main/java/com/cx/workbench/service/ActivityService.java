@@ -22,4 +22,8 @@ public interface ActivityService {
 
     //根据id查询activity关联user表
     Activity detailActivityById(String id);
+
+    //删除
+    int deleteActivity(String id);
+
 }
