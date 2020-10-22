@@ -2,6 +2,8 @@ package com.cx.settings.web.controller;
 
 import com.cx.settings.domain.User;
 import com.cx.settings.service.UserService;
+import com.cx.util.DateTimeUtil;
+import com.cx.util.MD5Util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -15,9 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.cx.util.DateTimeUtil.getSysTime;
-import static com.cx.util.MD5Util.getMD5;
-
 @Component
 @RequestMapping("/user/")
 public class UserController {
@@ -25,10 +24,16 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private DateTimeUtil dateTimeUtil;
+
+    @Autowired
+    private MD5Util md5Util;
+
     @RequestMapping("login")
     @ResponseBody
     public Map login(User user, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        user.setLoginPwd(getMD5(user.getLoginPwd()));
+        user.setLoginPwd(md5Util.getMD5(user.getLoginPwd()));
         String type = user.getLoginAct();
         System.out.println(type);
         //含有@走邮箱查询
@@ -46,7 +51,7 @@ public class UserController {
             if(user.getLockState().equals("1")){
                 //判断账号是否已过期
                 String Utime = user.getExpireTime();//失效时间
-                String Ttime = getSysTime();//系统时间
+                String Ttime =  dateTimeUtil.getSysTime();//系统时间
                 System.out.println(Ttime+"----"+Utime);
                 if (Utime.compareTo(Ttime) > 0) {
                     request.getSession().setAttribute("user",user);

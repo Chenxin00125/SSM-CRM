@@ -9,9 +9,9 @@
 
 <head>
 	<base href="<%=basePath%>">
-<link href="../jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
-<script type="text/javascript" src="../jquery/jquery-1.11.1-min.js"></script>
-<script type="text/javascript" src="../jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
+<link href="jquery/bootstrap_3.3.0/css/bootstrap.min.css" type="text/css" rel="stylesheet" />
+<script type="text/javascript" src="jquery/jquery-1.11.1-min.js"></script>
+<script type="text/javascript" src="jquery/bootstrap_3.3.0/js/bootstrap.min.js"></script>
 </head>
 <body>
 
@@ -78,7 +78,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='../login.jsp';">更新</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.jsp';">更新</button>
 				</div>
 			</div>
 		</div>
@@ -99,7 +99,7 @@
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='../login.jsp';">确定</button>
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="window.location.href='login.jsp';">确定</button>
 				</div>
 			</div>
 		</div>
@@ -115,8 +115,8 @@
 						<span class="glyphicon glyphicon-user"></span> zhangsan <span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li><a href="../workbench/index.jsp"><span class="glyphicon glyphicon-home"></span> 工作台</a></li>
-						<li><a href="../settings/index.jsp"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
+						<li><a href="workbench/index.jsp"><span class="glyphicon glyphicon-home"></span> 工作台</a></li>
+						<li><a href="settings/index.jsp"><span class="glyphicon glyphicon-wrench"></span> 系统设置</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#myInformation"><span class="glyphicon glyphicon-file"></span> 我的资料</a></li>
 						<li><a href="javascript:void(0)" data-toggle="modal" data-target="#editPwdModal"><span class="glyphicon glyphicon-edit"></span> 修改密码</a></li>
 						<li><a href="javascript:void(0);" data-toggle="modal" data-target="#exitModal"><span class="glyphicon glyphicon-off"></span> 退出</a></li>
@@ -183,7 +183,7 @@
 			<div style="position: relative; width: 34%; height: 50%; left: 66%; top: -200%">
 				数据管理
 				<br><br>
-				<a href="dictionary/index.jsp">数据字典表</a>
+				<a href="settings/dictionary/index.jsp">数据字典表</a>
 				<br>
 				<a href="javascript:void(0);">导入</a>
 				<br>

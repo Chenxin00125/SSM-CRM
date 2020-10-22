@@ -2,6 +2,8 @@ package com.cx.workbench.web.controller;
 
 import com.cx.settings.domain.User;
 import com.cx.settings.service.UserService;
+import com.cx.util.DateTimeUtil;
+import com.cx.util.UUIDUtil;
 import com.cx.workbench.domain.Activity;
 import com.cx.workbench.domain.ActivityRemark;
 import com.cx.workbench.service.ActivityRemarkService;
@@ -17,13 +19,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.cx.util.DateTimeUtil.getSysTime;
-import static com.cx.util.UUIDUtil.getUUID;
-
 @Controller
 @RequestMapping("/workbench/activity/")
 public class ActivityController {
 
+    @Autowired
+    private DateTimeUtil dateTimeUtil;
+    @Autowired
+    private UUIDUtil uuidUtil;
     @Autowired
     private ActivityService activityService;
     @Autowired
@@ -35,10 +38,10 @@ public class ActivityController {
     @ResponseBody
     public boolean saveActivity(Activity activity, HttpServletRequest request){
 //        System.out.println(activity);
-        activity.setCreateTime(getSysTime());
+        activity.setCreateTime(dateTimeUtil.getSysTime());
         User user = (User) request.getSession().getAttribute("user");
         activity.setCreateBy(user.getId());
-        activity.setId(getUUID());
+        activity.setId(uuidUtil.getUUID());
         boolean flag = false;
         int num = activityService.saveActivity(activity);
         if (num==1){
@@ -116,7 +119,7 @@ public class ActivityController {
     public Map editActivity(Activity activity,HttpServletRequest request){
         Map map = new HashMap();
         boolean flag = false;
-        activity.setEditTime(getSysTime());
+        activity.setEditTime(dateTimeUtil.getSysTime());
         User user = (User)request.getSession().getAttribute("user");
         activity.setEditBy(user.getId());
         System.out.println(activity);
@@ -133,7 +136,7 @@ public class ActivityController {
     @ResponseBody
     public boolean editRemark(ActivityRemark activityRemark,HttpServletRequest request){
         boolean flag = false;
-        activityRemark.setEditTime(getSysTime());
+        activityRemark.setEditTime(dateTimeUtil.getSysTime());
         User user = (User)request.getSession().getAttribute("user");
         activityRemark.setEditBy(user.getId());
         activityRemark.setEditFlag("1");
@@ -151,8 +154,8 @@ public class ActivityController {
         Map map = new HashMap();
         boolean flag = false;
         String id = activityRemark.getActivityId();
-        activityRemark.setCreateTime(getSysTime());
-        activityRemark.setId(getUUID());
+        activityRemark.setCreateTime(dateTimeUtil.getSysTime());
+        activityRemark.setId(uuidUtil.getUUID());
         activityRemark.setEditFlag("0");
         activityRemark.setEditBy(null);
         activityRemark.setEditTime(null);

@@ -1,8 +1,11 @@
 package com.cx.util;
 
+import org.springframework.stereotype.Component;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+@Component
 public class MD5Util {
 	
 	public static String getMD5(String password) {
