@@ -6,7 +6,7 @@
 
 
     <select id="getValueByType" resultType="dicValue">
-        select *from tbl_dic_value where typeCode = #{typeCode}
+        select *from tbl_dic_value where typeCode = #{typeCode} order by orderNo asc
     </select>
 
     <insert id="addStudent">
