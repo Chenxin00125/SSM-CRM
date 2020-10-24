@@ -19,7 +19,7 @@ $(function(){
         //console.log($("#create-marketActivityOwner").children());
         if(length==0){
             let data = getUserList();
-            console.log(data);
+            //console.log(data);
             $.each(data ,function(i,user){
                 $("#create-marketActivityOwner").append("<option value="+user.id+">"+user.name+"</option>");
             })
@@ -69,11 +69,12 @@ $(function(){
                 if(data){
                     $("#createActivityModal").modal("hide");
                     pageList(1,2);
+                    $("#saveActivityForm")[0].reset();
                 }else{
                     alert("服务器异常，请稍后重新操作");
-                    $("#createActivityModal").modal("hide");
+                    //$("#createActivityModal").modal("hide");
                 }
-                $("#saveActivityForm")[0].reset();
+
             }
         })
     })
@@ -100,7 +101,7 @@ $(function(){
             //console.log($("#edit-marketActivityOwner"));
             if(length==0){
                 let data = getUserList();
-                console.log(data);
+                //console.log(data);
                 $.each(data ,function(i,user){
                     $("#edit-marketActivityOwner").append("<option value="+user.id+">"+user.name+"</option>");
                 })
@@ -114,7 +115,7 @@ $(function(){
                 },
                 dataType : "json",
                 success : function (data) {
-                    console.log(data);
+                    //console.log(data);
                     $("#edit-marketActivityName").val(data.name);
                     $("#edit-startTime").val(data.startDate);
                     $("#edit-endTime").val(data.endDate);
@@ -146,11 +147,12 @@ $(function(){
             contentType : "application/x-www-form-urlencoded",
             success : function (data) {
                 if(data.flag){
+                    alert("修改成功");
                     $("#editActivityModal").modal("hide");
                     pageList(1,2);
                 }else{
                     alert("服务器异常，请稍后重新操作");
-                    $("#editActivityModal").modal("hide");
+                    //$("#editActivityModal").modal("hide");
                 }
             }
         })
@@ -202,8 +204,8 @@ $(function(){
 function pageList(pageNum,pageSize) {
     $("#inputBoxs").prop("checked",false);
     let form = $("#searchForm").serialize();
-    pageSize1 = pageSize;
-    pageNum1 = pageNum;
+    let pageSize1 = pageSize;
+    let pageNum1 = pageNum;
 
     pageSize = "pageSize="+pageSize;
     pageNum = "pageNum=" + pageNum;
