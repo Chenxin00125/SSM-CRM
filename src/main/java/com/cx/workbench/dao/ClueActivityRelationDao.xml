@@ -5,7 +5,13 @@
 
 <mapper namespace="com.cx.workbench.dao.ClueActivityRelationDao">
 	
-	
+	<delete id="deleteRelation">
+        delete from tbl_clue_activity_relation where id = #{id}
+    </delete>
+
+    <insert id="relation">
+        insert into tbl_clue_activity_relation values(#{id},#{clueId},#{activityId});
+    </insert>
   	
 </mapper>
 

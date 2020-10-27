@@ -153,7 +153,6 @@ public class ActivityController {
     public Map addRemark(ActivityRemark activityRemark){
         Map map = new HashMap();
         boolean flag = false;
-        String id = activityRemark.getActivityId();
         activityRemark.setCreateTime(dateTimeUtil.getSysTime());
         activityRemark.setId(uuidUtil.getUUID());
         activityRemark.setEditFlag("0");
@@ -172,14 +171,12 @@ public class ActivityController {
 
     @RequestMapping("deleteRemark")
     @ResponseBody
-    public Map deleteRemark(String id){
+    public boolean deleteRemark(String id){
         boolean flag = false;
-        Map map = new HashMap();
         int num = remarkService.deleteById(id);
         if (num == 1){
             flag = true;
         }
-        map.put("flag",flag);
-        return map;
+        return flag;
     }
 }

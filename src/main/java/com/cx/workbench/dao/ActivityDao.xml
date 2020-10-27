@@ -7,23 +7,23 @@
 
     <select id="getActivityList" resultType="activity">
         select a.id , a.name , u.name as owner, a.startDate , a.endDate from tbl_activity  a
-            join tbl_user  u on a.owner = u.id
-            <where>
-                <if test="activity.name!=null and activity.name!='' ">
-                    a.name like '%' #{activity.name} '%'
-                </if>
-                <if test="activity.owner!=null and activity.owner!=''">
-                    and u.name like '%' #{activity.owner} '%'
-                </if>
-                <if test="activity.startDate!=null and activity.startDate!=''">
-                    and a.startDate &gt;= #{activity.startDate}
-                </if>
-                <if test="activity.endDate!=null and activity.endDate!=''">
-                    and a.endDate &lt;= #{activity.endDate}
-                </if>
-            </where>
-            ORDER BY a.createTime DESC
-            limit #{startNum},#{pageSize}
+        join tbl_user  u on a.owner = u.id
+        <where>
+            <if test="activity.name!=null and activity.name!='' ">
+                a.name like '%' #{activity.name} '%'
+            </if>
+            <if test="activity.owner!=null and activity.owner!=''">
+                and u.name like '%' #{activity.owner} '%'
+            </if>
+            <if test="activity.startDate!=null and activity.startDate!=''">
+                and a.startDate &gt;= #{activity.startDate}
+            </if>
+            <if test="activity.endDate!=null and activity.endDate!=''">
+                and a.endDate &lt;= #{activity.endDate}
+            </if>
+        </where>
+        ORDER BY a.createTime DESC
+        limit #{startNum},#{pageSize}
 
     </select>
 
@@ -60,11 +60,26 @@
     </select>
 
     <update id="editActivityById">
-        update  tbl_activity set name = #{name} , owner = #{owner}, startDate = #{startDate} , endDate = #{endDate} , cost = #{cost}, description = #{description},editTime = #{editTime}, editBy = #{editBy}
-            where id = #{id}
+        update  tbl_activity set name=#{name} , owner=#{owner}, startDate=#{startDate} , endDate=#{endDate} , cost=#{cost}, description=#{description},editTime=#{editTime}, editBy=#{editBy}
+            where id=#{id}
     </update>
 
     <delete id="deleteActivity">
-        delete from tbl_activity where id = #{id}
+        delete from tbl_activity where id=#{id}
     </delete>
+
+    <select id="getActivityByClueId" resultType="activity">
+        select r.id as id,a.name,a.startDate,a.endDate,u.name as owner
+            from tbl_activity a
+            join tbl_user u on a.owner=u.id
+            join tbl_clue_activity_relation r on a.id = r.activityId
+            where r.clueId = #{id}
+    </select>
+
+    <select id="getClueActivity" resultType="activity">
+        select a.id,a.name,a.startDate,a.endDate,u.name as owner from tbl_activity a
+            join tbl_user u on a.owner=u.id
+            where a.name like '%' #{name} '%'
+            and a.id not in (select activityId from tbl_clue_activity_relation where clueId = #{clueId})
+    </select>
 </mapper>

@@ -24,6 +24,14 @@
 		//默认情况下取消和保存按钮是隐藏的
 		var cancelAndSaveBtnDefault = true;
 
+		function hiden(){
+			$("#remark").val("");
+			$("#remark").focusout();
+			$("#cancelAndSaveBtn").hide();
+			//设置remarkDiv的高度为130px
+			$("#remarkDiv").css("height","90px");
+			cancelAndSaveBtnDefault = true;
+		}
 
 
 		$(function(){
@@ -36,6 +44,46 @@
 					cancelAndSaveBtnDefault = false;
 				}
 			});
+
+			$("#remarkBody").on("mouseover",".remarkDiv",function(){
+				$(this).children("div").children("div").show();
+			});
+
+			$("#remarkBody").on("mouseout",".remarkDiv",function(){
+				$(this).children("div").children("div").hide();
+			});
+
+			$("#remarkBody").on("mouseover",".myHref",function(){
+				$(this).children("span").css("color","red");
+			});
+
+			$("#remarkBody").on("mouseout",".myHref",function(){
+				$(this).children("span").css("color","#E6E6E6");
+			});
+
+			/*绑定删除按钮*/
+			$("#deleteClue").click(function () {
+				if (confirm("确定删除该活动吗")){
+					let id = "${clue.id}"
+					$.ajax({
+						url : "workbench/clue/deleteClue",
+						type : "post",
+						data : {
+							"ids" : id
+						},
+						dataType : "json",
+						success : function (data) {
+							if(data){
+								alert("该活动已删除");
+								location.href = "workbench/clue/index.jsp";
+							}else {
+								alert("服务器异常，请稍后重新操作");
+							}
+						}
+					})
+				}
+			})
+
 
 			/*添加时间日期插件*/
 			$(".time").datetimepicker({
@@ -54,22 +102,6 @@
 				//设置remarkDiv的高度为130px
 				$("#remarkDiv").css("height","90px");
 				cancelAndSaveBtnDefault = true;
-			});
-
-			$(".remarkDiv").mouseover(function(){
-				$(this).children("div").children("div").show();
-			});
-
-			$(".remarkDiv").mouseout(function(){
-				$(this).children("div").children("div").hide();
-			});
-
-			$(".myHref").mouseover(function(){
-				$(this).children("span").css("color","red");
-			});
-
-			$(".myHref").mouseout(function(){
-				$(this).children("span").css("color","#E6E6E6");
 			});
 
 			/*编辑*/
@@ -102,7 +134,7 @@
 					data : form,
 					dataType : "json",
 					success : function (data) {
-						if(data.flag){
+						if(data){
 							alert("修改成功");
 							$("#editClueModal").modal("hide");
 							location.href="workbench/clue/detailClueById?id="+"${clue.id}";
@@ -113,7 +145,277 @@
 					}
 				})
 			})
+
+
+			/*设置一个timeout避免页面加载过快而js找不到东西*/
+			setTimeout(function () {
+				//$("#edit-marketClueOwner").val("${clue.owner}");
+				$.each($("#edit-clueOwner").children(),function(i,child){
+					let childValue = $(child).attr("value");
+					<%--if( childValue =="${activity.owner}"){--%>
+					<%--	$("#afterOwner").html($(child).text());--%>
+					<%--}--%>
+					/*备注附上user值*/
+					$("."+childValue).html($(child).text());
+				})
+
+			},200)
+
+			/*绑定保存按钮*/
+			$("#save-remark").click(function () {
+				addRemark();
+			})
+
+			/*绑定全选复选框*/
+			$("#inputBoxs").click(function () {
+				$(".inputName").prop("checked",this.checked);
+			})
+
+			/*绑定下面的复选框*/
+			/*动态的标签click方法触发不了事件，用on方法代替*/
+			$("#searchActivityBody").on("click",$(".inputName"),function () {
+				let length = $("input[class=inputName]:checked").length;
+				$("#inputBoxs").prop("checked",$(".inputName").length==length);
+			})
 		});
+
+		/*添加备注*/
+		function addRemark(){
+
+			let noteContent = $.trim($("#remark").val());
+			let clueId = "${clue.id}";
+			let createBy = "${sessionScope.user.id}";
+			//console.log(noteContent);
+			if(noteContent==""){
+				alert("请填写备注信息");
+				$("#remark").focus();
+			}else{
+				$.ajax({
+					url : "workbench/clue/addRemark",
+					type : "get",
+					data : {
+						"noteContent" : noteContent,
+						"clueId" : clueId,
+						"createBy" : createBy
+					},
+					dataType : "json",
+					success : function (data) {
+						if(data.flag){
+							let remark = data.clueRemark;
+							let html = "";
+							$("#remark").val("添加备注成功");
+							let time = remark.editFlag==1?remark.editTime:remark.createTime;
+
+							html += '<div class="remarkDiv" id="'+remark.id+'div" style="height: 60px;">';
+							html += '<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">';
+							html += '<div style="position: relative; top: -40px; left: 40px;" >';
+							html += '<h5 id="'+remark.id+'">'+remark.noteContent+'</h5>';
+							html += '<font color="gray">线索</font> <font color="gray">-</font> <b>'+"${clue.fullname}${clue.appellation}"+'-'+"${clue.company}"+'</b>&nbsp;&nbsp;&nbsp;';
+							html += '<small style="color: gray;" id="'+remark.id+'time">'+time+'</small><small>&nbsp;&nbsp;&nbsp;&nbsp;由 </small>';
+							html += '<small style="color: gray;" id="'+remark.id+'ByUser" class="'+"${sessionScope.user.id}"+'">'+"${sessionScope.user.name}"+'</small>';
+							html += '<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px;display: none" >';
+							html += '<a class="myHref" href="javascript:void(0);" onclick="bjRemark(\''+remark.id+'\')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>&nbsp;&nbsp;&nbsp;&nbsp;';
+							html += '<a class="myHref" href="javascript:void(0);" onclick="deleteRemark(\''+remark.id+'\')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>';
+							html += '</div></div></div>';
+							$("#remarkAfter").after(html);
+							setTimeout(function () {
+								hiden();
+							},4000)
+						}else{
+							alert("系统繁忙，请稍后重试");
+							$("#remark").val(noteContent);
+							$("#remark").focus();
+						}
+					}
+				})
+			}
+		}
+
+		function bjRemark(id) {
+			//alert(id);
+			let text = $("#"+id).text();
+			//alert(text);
+			$("#remark").focus();
+			$("#remark").val(text);
+
+			/*给之前的点击事件解绑*/
+			$("#save-remark").off("click");
+			$("#save-remark").on("click",function () {
+				let noteContent = $.trim($("#remark").val());
+				if(noteContent==""){
+					alert("不能修改为空");
+				}else if(noteContent==text){
+					alert("您还没有修改内容");
+				} else{
+					$.ajax({
+						url : "workbench/clue/editRemark",
+						type : "post",
+						data : {
+							"id" : id,
+							"noteContent" : noteContent
+						},
+						dataType : "json",
+						success : function (data) {
+							if(data){
+								$("#"+id).html(noteContent);
+								/*修改完成获取当前时间给备注时间显示*/
+								//获取当前日期
+								let date = (new Date()).toLocaleDateString().replaceAll("/","-")
+								//获取当前时间 ，时 分 秒
+								let time = (new Date()).getHours()+":"+(new Date()).getMinutes()+":"+(new Date()).getSeconds();
+								$("#"+id+"time").html(date+"&nbsp;"+time);
+								$("#"+id+"ByUser").html("${sessionScope.user.name}");
+								$("#remark").val("修改成功");
+								/*修改完成后清除事件*/
+								$("#save-remark").off("click");
+								setTimeout(function () {
+									hiden();
+								},4000)
+							}else{
+								alert("系统繁忙，请稍后重试");
+								$("#remark").val(noteContent);
+								$("#remark").focus();
+							}
+						}
+					})
+				}
+			})
+		}
+
+		function deleteRemark(id) {
+			if(confirm("确定删除该备注吗")){
+				$.ajax({
+					url : "workbench/clue/deleteRemark",
+					type : "post",
+					data : {
+						"id" : id
+					},
+					dataType : "json",
+					success : function (data) {
+						if(data){
+							$("#"+id+"div").remove();
+						}else{
+							alert("系统繁忙，请稍后重试");
+						}
+					}
+				})
+			}
+		}
+
+		/*解除关联*/
+		function freeRelation(id) {
+			if(confirm("确定解除该关联")){
+				$.ajax({
+					url : "workbench/clue/freeRelation",
+					type : "post",
+					data : {
+						"id" : id
+					},
+					dataType : "json",
+					success : function (data) {
+						if(data){
+							$("#"+id+"tr").remove();
+							alert("关联已解除");
+						}else{
+							alert("系统繁忙，请稍后重试");
+						}
+					}
+				})
+			}
+		}
+
+		/*let timer = null;
+		function searchChange() {
+		    /!*防抖*!/
+		    clearTimeout(timer);
+            timer = setTimeout(function () {
+                console.log($("#searchInput").val());
+            },2000)
+                //alert(1);
+        }*/
+
+		function searchChange() {
+			let name = $("#searchInput").val();
+			let clueId = "${clue.id}";
+			$.ajax({
+				url : "workbench/clue/getSearchActivity",
+				type : "post",
+				data : {
+					name : name,
+					clueId : clueId
+				},
+				dataType : "json",
+				success : function (data) {
+					//console.log(data);
+					if (data.length<1){
+						alert("查询无结果");
+					}else{
+						let html = "";
+						$.each(data,function (i,activity) {
+							html += '<tr id="'+activity.id+'tr">';
+							html += '<td><input class="inputName" value="'+activity.id+'" type="checkbox"/></td> ';
+							html += '<td>'+activity.name+'</td>';
+							html += '<td>'+activity.startDate+'</td> ';
+							html += '<td>'+activity.endDate+'</td>';
+							html += '<td>'+activity.owner+'</td>';
+							html += '</tr>';
+						})
+						$("#searchActivityBody").html(html);
+					}
+				}
+			})
+		}
+
+		function relation() {
+			let  ids = $("input[class=inputName]:checked");
+			let activityId = "";
+			let length = $(ids).length;
+			if(length>0){
+				if(length>1){
+					$.each(ids,function (i,id) {
+						activityId = $(id).val() + "," + activityId  ;
+					})
+				}else{
+					activityId = $(ids).val();
+				}
+				//console.log(activityId);
+				$.ajax({
+					url : "workbench/clue/relation",
+					type : "post",
+					data : {
+						activityId : activityId,
+						clueId : "${clue.id}"
+					},
+					dataType : "json",
+					success : function (data) {
+						if(data.flag){
+							alert("关联成功");
+							$("#bundModal").modal("hide");
+							let html = "";
+							$.each(data.activityList,function (i,activity) {
+								html += '<tr id="'+activity.id+'tr">';
+								html += '<td>'+activity.name+'</td>';
+								html += '<td>'+activity.startDate+'</td>';
+								html += '<td>'+activity.endDate+'</td>';
+								html += '<td>'+activity.owner+'</td>';
+								html += '<td><a href="javascript:void(0);"  style="text-decoration: none;" onclick="freeRelation('+activity.id+')"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
+								html += '</tr>';
+							})
+							$("#activityBody").html(html);
+							/*绑定全选复选框*/
+							$("#inputBoxs").prop("checked",false);
+							$.each(ids,function (i,id) {
+								$("#"+$(id).val()+"tr").remove();
+							})
+						}else{
+							alert("系统繁忙，请稍后重试");
+						}
+					}
+				})
+			}else{
+				alert("请选择要关联的市场活动");
+			}
+		}
 
 	</script>
 
@@ -134,7 +436,7 @@
 				<div class="btn-group" style="position: relative; top: 18%; left: 8px;">
 					<form class="form-inline" role="form">
 						<div class="form-group has-feedback">
-							<input type="text" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
+							<input type="text" onchange="searchChange()" id="searchInput" class="form-control" style="width: 300px;" placeholder="请输入市场活动名称，支持模糊查询">
 							<span class="glyphicon glyphicon-search form-control-feedback"></span>
 						</div>
 					</form>
@@ -142,7 +444,7 @@
 				<table id="activityTable" class="table table-hover" style="width: 900px; position: relative;top: 10px;">
 					<thead>
 					<tr style="color: #B3B3B3;">
-						<td><input type="checkbox"/></td>
+						<td><input type="checkbox" id="inputBoxs"/></td>
 						<td>名称</td>
 						<td>开始日期</td>
 						<td>结束日期</td>
@@ -150,27 +452,13 @@
 						<td></td>
 					</tr>
 					</thead>
-					<tbody>
-					<tr>
-						<td><input type="checkbox"/></td>
-						<td>发传单</td>
-						<td>2020-10-10</td>
-						<td>2020-10-20</td>
-						<td>zhangsan</td>
-					</tr>
-					<tr>
-						<td><input type="checkbox"/></td>
-						<td>发传单</td>
-						<td>2020-10-10</td>
-						<td>2020-10-20</td>
-						<td>zhangsan</td>
-					</tr>
+					<tbody id="searchActivityBody">
 					</tbody>
 				</table>
 			</div>
 			<div class="modal-footer">
 				<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-				<button type="button" class="btn btn-primary" data-dismiss="modal">关联</button>
+				<button type="button" class="btn btn-primary" onclick="relation()">关联</button>
 			</div>
 		</div>
 	</div>
@@ -325,7 +613,7 @@
 	<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
 		<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.jsp';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
 		<button type="button" class="btn btn-default" data-toggle="modal" id="editCLueWindow"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-		<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+		<button type="button" class="btn btn-danger" id="deleteClue"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 	</div>
 </div>
 
@@ -416,45 +704,33 @@
 </div>
 
 <!-- 备注 -->
-<div style="position: relative; top: 40px; left: 40px;">
-	<div class="page-header">
+<div style="position: relative; top: 40px; left: 40px;" id="remarkBody">
+	<div class="page-header" id="remarkAfter">
 		<h4>备注</h4>
 	</div>
-
-	<!-- 备注1 -->
-	<div class="remarkDiv" style="height: 60px;">
-		<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">
-		<div style="position: relative; top: -40px; left: 40px;" >
-			<h5>哎呦！</h5>
-			<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:10:10 由zhangsan</small>
-			<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+	<c:forEach begin="0" end="${remarkList.size()}" step="1" items="${remarkList}" var="remark">
+		<div class="remarkDiv" style="height: 60px;" id="${remark.id}div">
+			<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">
+			<div style="position: relative; top: -40px; left: 40px;" >
+				<h5 id="${remark.id}">${remark.noteContent}</h5>
+				<font color="gray">线索</font> <font color="gray">-</font> <b>${clue.fullname}${clue.appellation}-${clue.company}</b>&nbsp;&nbsp;&nbsp;
+				<small style="color: gray;" id="${remark.id}time">${remark.editFlag==1?remark.editTime:remark.createTime}</small><small>&nbsp;&nbsp;&nbsp;由</small>
+				<small style="color: gray;" id="${remark.id}ByUser" class="${remark.editFlag==1?remark.editBy:remark.createBy}"></small>
+				<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
+					<a class="myHref" href="javascript:void(0);" onclick="bjRemark('${remark.id}')"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a class="myHref" href="javascript:void(0);" onclick="deleteRemark('${remark.id}')"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
+				</div>
 			</div>
 		</div>
-	</div>
-
-	<!-- 备注2 -->
-	<div class="remarkDiv" style="height: 60px;">
-		<img title="zhangsan" src="static/images/user-thumbnail.png" style="width: 30px; height:30px;">
-		<div style="position: relative; top: -40px; left: 40px;" >
-			<h5>呵呵！</h5>
-			<font color="gray">线索</font> <font color="gray">-</font> <b>李四先生-动力节点</b> <small style="color: gray;"> 2017-01-22 10:20:10 由zhangsan</small>
-			<div style="position: relative; left: 500px; top: -30px; height: 30px; width: 100px; display: none;">
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-edit" style="font-size: 20px; color: #E6E6E6;"></span></a>
-				&nbsp;&nbsp;&nbsp;&nbsp;
-				<a class="myHref" href="javascript:void(0);"><span class="glyphicon glyphicon-remove" style="font-size: 20px; color: #E6E6E6;"></span></a>
-			</div>
-		</div>
-	</div>
+	</c:forEach>
 
 	<div id="remarkDiv" style="background-color: #E6E6E6; width: 870px; height: 90px;">
 		<form role="form" style="position: relative;top: 10px; left: 10px;">
 			<textarea id="remark" class="form-control" style="width: 850px; resize : none;" rows="2"  placeholder="添加备注..."></textarea>
 			<p id="cancelAndSaveBtn" style="position: relative;left: 737px; top: 10px; display: none;">
 				<button id="cancelBtn" type="button" class="btn btn-default">取消</button>
-				<button type="button" class="btn btn-primary">保存</button>
+				<button type="button" class="btn btn-primary" id="save-remark">保存</button>
 			</p>
 		</form>
 	</div>
@@ -477,21 +753,16 @@
 					<td></td>
 				</tr>
 				</thead>
-				<tbody>
-				<tr>
-					<td>发传单</td>
-					<td>2020-10-10</td>
-					<td>2020-10-20</td>
-					<td>zhangsan</td>
-					<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-				</tr>
-				<tr>
-					<td>发传单</td>
-					<td>2020-10-10</td>
-					<td>2020-10-20</td>
-					<td>zhangsan</td>
-					<td><a href="javascript:void(0);"  style="text-decoration: none;"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
-				</tr>
+				<tbody id="activityBody">
+				<c:forEach begin="0" end="${activityList.size()}" step="1" items="${activityList}" var="activity">
+					<tr id="${activity.id}tr">
+						<td>${activity.name}</td>
+						<td>${activity.startDate}</td>
+						<td>${activity.endDate}</td>
+						<td>${activity.owner}</td>
+						<td><a href="javascript:void(0);"  style="text-decoration: none;" onclick="freeRelation('${activity.id}')"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>
+					</tr>
+				</c:forEach>
 				</tbody>
 			</table>
 		</div>

@@ -5,9 +5,12 @@ import com.cx.settings.service.UserService;
 import com.cx.util.DateTimeUtil;
 import com.cx.util.UUIDUtil;
 import com.cx.workbench.domain.Activity;
-import com.cx.workbench.domain.ActivityRemark;
 import com.cx.workbench.domain.Clue;
+import com.cx.workbench.domain.ClueActivityRelation;
 import com.cx.workbench.domain.ClueRemark;
+import com.cx.workbench.service.ActivityService;
+import com.cx.workbench.service.ClueActivityRelationService;
+import com.cx.workbench.service.ClueRemarkService;
 import com.cx.workbench.service.ClueService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -32,6 +35,12 @@ public class ClueController {
     private DateTimeUtil dateTimeUtil;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ClueRemarkService remarkService;
+    @Autowired
+    private ActivityService activityService;
+    @Autowired
+    private ClueActivityRelationService relationService;
 
     @RequestMapping("saveClue")
     @ResponseBody
@@ -88,7 +97,8 @@ public class ClueController {
         Clue clue = clueService.detailClueById(id);
         ModelAndView modelAndView = new ModelAndView();
         List<User> userList = userService.getUserList();
-       // List<ClueRemark> remarkList = remarkService.selectRemarkByActivityId(id);
+        List<ClueRemark> remarkList = remarkService.selectRemarkByClueId(id);
+        List<Activity> activityList = activityService.getActivityByClueId(id);
         for (User user:userList ) {
             if(user.getId().equals(clue.getCreateBy())){
                 clue.setCreateBy(user.getName());
@@ -102,10 +112,103 @@ public class ClueController {
         }
 
         modelAndView.addObject("userList",userList);
-        //modelAndView.addObject("remarkList",remarkList);
+        modelAndView.addObject("remarkList",remarkList);
         modelAndView.addObject("clue",clue);
+        modelAndView.addObject("activityList",activityList);
         modelAndView.setViewName("clue/detail");
         return modelAndView;
+    }
+
+    @RequestMapping("editRemark")
+    @ResponseBody
+    public boolean editRemark(ClueRemark clueRemark,HttpServletRequest request){
+        boolean flag = false;
+        clueRemark.setEditTime(dateTimeUtil.getSysTime());
+        User user = (User)request.getSession().getAttribute("user");
+        clueRemark.setEditBy(user.getId());
+        clueRemark.setEditFlag("1");
+        System.out.println(clueRemark);
+        int num = remarkService.updateById(clueRemark);
+        if (num==1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @RequestMapping("addRemark")
+    @ResponseBody
+    public Map addRemark(ClueRemark clueRemark){
+        Map map = new HashMap();
+        boolean flag = false;
+        clueRemark.setCreateTime(dateTimeUtil.getSysTime());
+        System.out.println(clueRemark.getCreateTime().length());
+        clueRemark.setId(uuidUtil.getUUID());
+        clueRemark.setEditFlag("0");
+        clueRemark.setEditBy(null);
+        clueRemark.setEditTime(null);
+        System.out.println(clueRemark);
+        int num = remarkService.addRemark(clueRemark);
+        if (num==1){
+            flag = true;
+            map.put("clueRemark",clueRemark);
+        }
+        map.put("flag",flag);
+        return map;
+    }
+
+    @RequestMapping("deleteRemark")
+    @ResponseBody
+    public boolean deleteRemark(String id){
+        boolean flag = false;
+        int num = remarkService.deleteById(id);
+        if (num == 1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @RequestMapping("freeRelation")
+    @ResponseBody
+    public boolean freeRelation(String id){
+        boolean flag = false;
+        int num = relationService.deleteRelation(id);
+        if (num == 1){
+            flag = true;
+        }
+        return flag;
+    }
+
+    @RequestMapping("getSearchActivity")
+    @ResponseBody
+    public List<Activity> getSearchActivity(String name,String clueId){
+        List<Activity> activityList= activityService.getClueActivity(name,clueId);
+        return  activityList;
+    }
+
+    @RequestMapping("relation")
+    @ResponseBody
+    public Map relation(String activityId,String clueId){
+        boolean flag = false;
+        Map map = new HashMap();
+        ClueActivityRelation car = new ClueActivityRelation();
+        car.setClueId(clueId);
+        String[] aid = activityId.split(",");
+        System.out.println(aid);
+        int num = 0;
+        for (int i = 0; i < aid.length; i++) {
+            car.setId(UUIDUtil.getUUID());
+            car.setActivityId(aid[i]);
+            relationService.relation(car);
+            num ++;
+        }
+        if(num>0){
+            flag = true;
+            map.put("flag",flag);
+            List<Activity> activityList = activityService.getActivityByClueId(clueId);
+            map.put("activityList",activityList);
+        }
+
+        return map;
     }
 
 }

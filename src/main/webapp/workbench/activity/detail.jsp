@@ -286,7 +286,7 @@
                     },
                     dataType : "json",
                     success : function (data) {
-                        if(data.flag){
+                        if(data){
                             $("#"+id+"div").remove();
                         }else{
                             alert("系统繁忙，请稍后重试");

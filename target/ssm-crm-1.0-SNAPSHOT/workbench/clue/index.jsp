@@ -174,7 +174,7 @@
                     dataType : "json",
                     contentType : "application/x-www-form-urlencoded",
                     success : function (data) {
-                        if(data.flag){
+                        if(data){
                         	alert("修改成功");
                             $("#editClueModal").modal("hide");
                             pageList(1,2);
