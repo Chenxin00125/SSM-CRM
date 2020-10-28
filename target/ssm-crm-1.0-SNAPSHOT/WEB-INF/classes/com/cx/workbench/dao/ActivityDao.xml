@@ -74,6 +74,7 @@
             join tbl_user u on a.owner=u.id
             join tbl_clue_activity_relation r on a.id = r.activityId
             where r.clueId = #{id}
+            order by a.startDate desc
     </select>
 
     <select id="getClueActivity" resultType="activity">
@@ -81,5 +82,6 @@
             join tbl_user u on a.owner=u.id
             where a.name like '%' #{name} '%'
             and a.id not in (select activityId from tbl_clue_activity_relation where clueId = #{clueId})
+            order by a.startDate desc
     </select>
 </mapper>

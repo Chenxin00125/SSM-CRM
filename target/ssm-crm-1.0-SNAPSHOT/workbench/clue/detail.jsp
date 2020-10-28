@@ -304,12 +304,13 @@
 
 		/*解除关联*/
 		function freeRelation(id) {
+		    /*id为关联中间表的id*/
 			if(confirm("确定解除该关联")){
 				$.ajax({
 					url : "workbench/clue/freeRelation",
 					type : "post",
 					data : {
-						"id" : id
+						id : id
 					},
 					dataType : "json",
 					success : function (data) {
@@ -391,6 +392,7 @@
 						if(data.flag){
 							alert("关联成功");
 							$("#bundModal").modal("hide");
+                            $("#activityBody").html("");
 							let html = "";
 							$.each(data.activityList,function (i,activity) {
 								html += '<tr id="'+activity.id+'tr">';
@@ -398,7 +400,7 @@
 								html += '<td>'+activity.startDate+'</td>';
 								html += '<td>'+activity.endDate+'</td>';
 								html += '<td>'+activity.owner+'</td>';
-								html += '<td><a href="javascript:void(0);"  style="text-decoration: none;" onclick="freeRelation('+activity.id+')"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
+								html += '<td><a href="javascript:void(0);"  style="text-decoration: none;" onclick="freeRelation(\''+activity.id+'\')"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
 								html += '</tr>';
 							})
 							$("#activityBody").html(html);
