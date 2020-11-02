@@ -15,4 +15,6 @@ public interface ClueRemarkDao {
     int addRemark(ClueRemark clueRemark);
 
     int deleteByClueId(String id);
+
+    int selectCountByClueId(String clueId);
 }

@@ -66,6 +66,12 @@ public class ActivityServiceImpl implements ActivityService {
     }
 
     @Override
+    public List<Activity> getActivityByTran(String id) {
+        List<Activity> activityList = activityDao.getActivityByClueId(id);
+        return activityList;
+    }
+
+    @Override
     public List<Activity> getClueActivity(String name, String clueId) {
         List<Activity> activityList = activityDao.getClueActivity(name,clueId);
         return activityList;

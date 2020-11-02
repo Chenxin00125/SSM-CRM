@@ -45,4 +45,9 @@ public class ClueRemarkServiceImpl implements ClueRemarkService {
         int num = remarkDao.deleteByClueId(id);
         return num;
     }
+
+    @Override
+    public int selectCountByClueId(String clueId) {
+        return remarkDao.selectCountByClueId(clueId);
+    }
 }

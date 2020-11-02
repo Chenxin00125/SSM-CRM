@@ -4,7 +4,11 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.cx.workbench.dao.ContactsDao">
-	
+
+    <insert id="saveContacts">
+        insert into tbl_contacts
+         VALUES(#{id},#{clue.owner},#{clue.source},#{customerId},#{clue.fullname},#{clue.appellation},#{clue.email},#{clue.mphone},#{clue.job},null,#{clue.createBy},#{clue.createTime},#{clue.editBy},#{clue.editTime},#{clue.description},#{clue.contactSummary},#{clue.nextContactTime},#{clue.address})
+    </insert>
   	
 </mapper>
 

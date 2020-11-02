@@ -20,4 +20,6 @@ public interface ClueDao {
     int editClueById(Clue clue);
 
     Clue detailClueById(String id);
+
+    int deleteClue(String id);
 }

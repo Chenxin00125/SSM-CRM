@@ -77,6 +77,7 @@
             order by a.startDate desc
     </select>
 
+    <!--查询还为关联的activity-->
     <select id="getClueActivity" resultType="activity">
         select a.id,a.name,a.startDate,a.endDate,u.name as owner from tbl_activity a
             join tbl_user u on a.owner=u.id
@@ -84,4 +85,14 @@
             and a.id not in (select activityId from tbl_clue_activity_relation where clueId = #{clueId})
             order by a.startDate desc
     </select>
+
+    <select id="getActivityByTran" resultType="activity">
+        select a.id,a.name,a.startDate,a.endDate,u.name as owner
+            from tbl_activity a
+            join tbl_user u on a.owner=u.id
+            join tbl_clue_activity_relation r on a.id = r.activityId
+            where r.clueId = #{id}
+            order by a.startDate desc
+    </select>
+
 </mapper>

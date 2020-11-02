@@ -30,6 +30,9 @@ public interface ActivityDao {
     //关联关系查询市场活动，根据中间表查询 id为Clue（线索）的id
     List<Activity> getActivityByClueId(String id);
 
+    //关联关系查询市场活动，根据中间表查询 id为Clue（线索）的id
+    List<Activity> getActivityByTran(String id);
+
     //模糊name查询未关联线索的市场活动
     List<Activity> getClueActivity(@Param("name") String name,@Param("clueId") String clueId);
 

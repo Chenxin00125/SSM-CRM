@@ -21,4 +21,7 @@ public interface ClueRemarkService {
 
     //根据activityID删除备注
     int deleteByClueId(String id);
+
+    //根据clueId查询备注的条数
+    int selectCountByClueId(String clueId);
 }

@@ -9,9 +9,17 @@
         delete from tbl_clue_activity_relation where id = #{id}
     </delete>
 
+    <delete id="deleteRelationByClueId">
+        delete from tbl_clue_activity_relation where clueId = #{id}
+    </delete>
+
     <insert id="relation">
         insert into tbl_clue_activity_relation values(#{id},#{clueId},#{activityId});
     </insert>
+
+    <select id="getActivityId" resultType="String">
+        select activityId from tbl_clue_activity_relation where clueId=#{clueId}
+    </select>
   	
 </mapper>
 

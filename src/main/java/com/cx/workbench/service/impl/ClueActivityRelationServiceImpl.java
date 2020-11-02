@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ClueActivityRelationServiceImpl implements ClueActivityRelationService {
@@ -24,5 +26,15 @@ public class ClueActivityRelationServiceImpl implements ClueActivityRelationServ
     public int relation(ClueActivityRelation car) {
         int num = relationDao.relation(car);
         return num;
+    }
+
+    @Override
+    public String[] getActivityId(String clueId) {
+        return relationDao.getActivityId(clueId);
+    }
+
+    @Override
+    public int deleteRelationByClueId(String id) {
+        return relationDao.deleteRelationByClueId(id);
     }
 }

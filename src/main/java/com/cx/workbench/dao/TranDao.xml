@@ -4,6 +4,11 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.cx.workbench.dao.TranDao">
+    <!--转换创建的交易-->
+    <insert id="tranDeal">
+        insert into tbl_tran (id,owner,name,money,expectedDate,customerId,stage,source,activityId,contactsId,description,createBy,createTime)
+        values(#{id},#{owner},#{name},#{money},#{expectedDate},#{customerId},#{stage},#{source},#{activityId},#{contactsId},#{description},#{createBy},#{createTime})
+    </insert>
 	
   	
 </mapper>

@@ -5,7 +5,10 @@
 
 <mapper namespace="com.cx.workbench.dao.ContactsActivityRelationDao">
 	
-  	
+  	<insert id="addRelation">
+        insert into tbl_contacts_activity_relation values(#{id},#{contactsId},#{activityId});
+    </insert>
+
 </mapper>
 
 

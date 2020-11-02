@@ -4,8 +4,15 @@
   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.cx.workbench.dao.CustomerDao">
-	
-  	
+
+    <select id="getCustomerByCompany" resultType="customer">
+        select * from tbl_customer where name = #{company}
+    </select>
+
+    <insert id="saveCustomer">
+        insert into tbl_customer
+         VALUES(#{id},#{clue.owner},#{clue.company},#{clue.website},#{clue.phone},#{clue.createBy},#{createTime},null,null,#{clue.contactSummary},#{clue.nextContactTime},#{clue.description},#{clue.address})
+    </insert>
 </mapper>
 
 

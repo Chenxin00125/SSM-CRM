@@ -185,6 +185,39 @@
                     }
                 })
             })
+
+			/*绑定删除按钮*/
+			$("#deleteClueBtn").click(function () {
+				if(confirm("确定删除选择的线索吗")){
+					/*获取到打勾的复选框的jQuery对象*/
+					let inputName = $("input[class=inputName]:checked");
+					let ids = "";
+					if (inputName.length>0){
+						for (let i = 0; i <inputName.length; i++) {
+							ids = $(inputName[i]).val()+ "," +ids ;
+						}
+						//console.log(ids);
+						$.ajax({
+							url : "workbench/clue/deleteClue",
+							type : "post",
+							data : {
+								"ids" : ids
+							},
+							dataType : "json",
+							success : function (data) {
+								if(data){
+									alert("删除活动成功");
+									pageList(1,2);
+								}else{
+									alert("服务器异常，请稍后重新操作");
+								}
+							}
+						})
+					}else{
+						alert("请选择要删除的活动");
+					}
+				}
+			})
 		});
 		function getUserList() {
 			let result ;
@@ -200,7 +233,7 @@
 			return result;
 		}
 		function pageList(pageNum,pageSize) {
-			//$("#inputBoxs").prop("checked",false);
+			$("#inputBoxs").prop("checked",false);
 			let form = $("#searchForm").serialize();
 			let pageSize1 = pageSize;
 			let pageNum1 = pageNum;
@@ -655,7 +688,7 @@
 			<div class="btn-group" style="position: relative; top: 18%;">
 				<button type="button" class="btn btn-primary" id="createClueBtn"><span class="glyphicon glyphicon-plus"></span> 创建</button>
 				<button type="button" class="btn btn-default" data-toggle="modal" id="editCLueWindow"><span class="glyphicon glyphicon-pencil"></span> 修改</button>
-				<button type="button" class="btn btn-danger"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+				<button type="button" class="btn btn-danger" id="deleteClueBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 			</div>
 
 

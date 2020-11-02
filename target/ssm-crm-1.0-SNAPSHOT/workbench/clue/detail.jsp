@@ -33,8 +33,17 @@
 			cancelAndSaveBtnDefault = true;
 		}
 
-
 		$(function(){
+
+			$("#openBundModal").click(function () {
+				$("#bundModal").modal("show");
+				$("#searchInput").on("keydown",function(e){
+					if(e.keyCode === 13){
+						return false;
+					}
+				});
+			})
+
 			$("#remark").focus(function(){
 				if(cancelAndSaveBtnDefault){
 					//设置remarkDiv的高度为130px
@@ -62,7 +71,7 @@
 			});
 
 			/*绑定删除按钮*/
-			$("#deleteClue").click(function () {
+			$("#deleteClueBtn").click(function () {
 				if (confirm("确定删除该活动吗")){
 					let id = "${clue.id}"
 					$.ajax({
@@ -177,6 +186,7 @@
 				let length = $("input[class=inputName]:checked").length;
 				$("#inputBoxs").prop("checked",$(".inputName").length==length);
 			})
+
 		});
 
 		/*添加备注*/
@@ -400,7 +410,7 @@
 								html += '<td>'+activity.startDate+'</td>';
 								html += '<td>'+activity.endDate+'</td>';
 								html += '<td>'+activity.owner+'</td>';
-								html += '<td><a href="javascript:void(0);"  style="text-decoration: none;" onclick="freeRelation(\''+activity.id+'\')"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
+								html += '<td><a href="javascript:void(0)"  style="text-decoration: none;" onclick="freeRelation(\''+activity.id+'\')"><span class="glyphicon glyphicon-remove"></span>解除关联</a></td>';
 								html += '</tr>';
 							})
 							$("#activityBody").html(html);
@@ -613,9 +623,9 @@
 		<h3>${clue.fullname}${clue.appellation} <small>${clue.company}</small></h3>
 	</div>
 	<div style="position: relative; height: 50px; width: 500px;  top: -72px; left: 700px;">
-		<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.jsp';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
+		<button type="button" class="btn btn-default" onclick="window.location.href='workbench/clue/convert.jsp?clueId=${clue.id}&name=${clue.fullname}&appellation=${clue.appellation}&company=${clue.company}&owner=${clue.owner}';"><span class="glyphicon glyphicon-retweet"></span> 转换</button>
 		<button type="button" class="btn btn-default" data-toggle="modal" id="editCLueWindow"><span class="glyphicon glyphicon-edit"></span> 编辑</button>
-		<button type="button" class="btn btn-danger" id="deleteClue"><span class="glyphicon glyphicon-minus"></span> 删除</button>
+		<button type="button" class="btn btn-danger" id="deleteClueBtn"><span class="glyphicon glyphicon-minus"></span> 删除</button>
 	</div>
 </div>
 
@@ -770,7 +780,7 @@
 		</div>
 
 		<div>
-			<a href="javascript:void(0);" data-toggle="modal" data-target="#bundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
+			<a href="javascript:void(0)" data-toggle="modal" id="openBundModal" style="text-decoration: none;"><span class="glyphicon glyphicon-plus"></span>关联市场活动</a>
 		</div>
 	</div>
 </div>

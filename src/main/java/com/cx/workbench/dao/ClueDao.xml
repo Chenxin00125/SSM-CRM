@@ -81,6 +81,11 @@
     <select id="detailClueById" resultType="clue">
         select * from tbl_clue where id = #{id}
     </select>
+
+    <delete id="deleteClue">
+        delete from tbl_clue where id=#{id}
+    </delete>
+
 </mapper>
 
 

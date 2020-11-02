@@ -53,4 +53,9 @@ public class ClueServiceImpl implements ClueService {
         Clue clue = clueDao.detailClueById(id);
         return clue;
     }
+
+    @Override
+    public int deleteClue(String id) {
+        return clueDao.deleteClue(id);
+    }
 }
