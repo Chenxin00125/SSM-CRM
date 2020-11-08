@@ -9,6 +9,10 @@
         insert into tbl_customer_remark values(#{id},#{noteContent},#{createBy},#{createTime},#{editBy},#{editTime},#{editFlag},#{customerId})
     </insert>
 
+    <select id="selectRemarkByCustomerId" resultType="customerRemark">
+        select * from tbl_customer_remark where customerId = #{customerId} order by createTime desc
+    </select>
+
 </mapper>
 
 

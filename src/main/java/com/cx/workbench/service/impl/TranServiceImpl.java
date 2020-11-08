@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class TranServiceImpl implements TranService {
@@ -15,5 +17,10 @@ public class TranServiceImpl implements TranService {
     @Override
     public int tranDeal(Tran tran) {
         return tranDao.tranDeal(tran);
+    }
+
+    @Override
+    public List<Tran> selectByCustomerId(String id) {
+        return tranDao.selectByCustomerId(id);
     }
 }

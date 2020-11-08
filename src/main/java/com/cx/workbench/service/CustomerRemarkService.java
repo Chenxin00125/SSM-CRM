@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface CustomerRemarkService {
 
-    //根据activityId查询备注
-    //List<ClueRemark> selectRemarkByClueId(String clueId);
+    //根据CustomerId查询备注
+    List<CustomerRemark> selectRemarkByCustomerId(String customerId);
+
 
     //删除备注
     //int deleteById(String id);
@@ -16,7 +17,7 @@ public interface CustomerRemarkService {
     //修改备注
     //int updateById(ClueRemark clueRemark);
 
-    //添加备注
+    //添加备注,线索转换，传值为线索
     int addRemark(List<ClueRemark> remarkList,String id);
 
     //根据activityID删除备注

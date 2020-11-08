@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class ContactsServiceImpl implements ContactsService {
@@ -17,5 +19,10 @@ public class ContactsServiceImpl implements ContactsService {
     @Override
     public int saveContacts(Clue clue, String customerId,String id) {
         return contactsDao.saveContacts(clue,customerId,id);
+    }
+
+    @Override
+    public List<Contacts> selectByCustomerId(String id) {
+        return contactsDao.selectByCustomerId(id);
     }
 }

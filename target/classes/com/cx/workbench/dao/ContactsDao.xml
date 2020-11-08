@@ -9,6 +9,10 @@
         insert into tbl_contacts
          VALUES(#{id},#{clue.owner},#{clue.source},#{customerId},#{clue.fullname},#{clue.appellation},#{clue.email},#{clue.mphone},#{clue.job},null,#{clue.createBy},#{clue.createTime},#{clue.editBy},#{clue.editTime},#{clue.description},#{clue.contactSummary},#{clue.nextContactTime},#{clue.address})
     </insert>
+
+    <select id="selectByCustomerId" resultType="contacts">
+        select id,fullname,email,mphone from tbl_contacts where customerId=#{id}
+    </select>
   	
 </mapper>
 

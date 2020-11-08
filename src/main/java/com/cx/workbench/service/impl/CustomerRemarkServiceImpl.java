@@ -21,6 +21,11 @@ public class CustomerRemarkServiceImpl implements CustomerRemarkService{
     private UUIDUtil uuidUtil;
 
     @Override
+    public List<CustomerRemark> selectRemarkByCustomerId(String customerId) {
+        return remarkDao.selectRemarkByCustomerId(customerId);
+    }
+
+    @Override
     public int addRemark(List<ClueRemark> remarkList, String id) {
         CustomerRemark customerRemark = new CustomerRemark();
         int num = 0;

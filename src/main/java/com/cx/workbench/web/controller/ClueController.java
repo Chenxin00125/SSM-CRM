@@ -235,6 +235,7 @@ public class ClueController {
         for ( int i = 0 ;i < id.length ; i++){
             int b = clueRemarkService.deleteByClueId(id[i]);
             int num = clueService.deleteClue(id[i]);
+            relationService.deleteRelationByClueId(id[i]);
             aNum = aNum + num;
             a = a + b;
         }
@@ -305,6 +306,7 @@ public class ClueController {
             tran.setMoney(money);
             tran.setCustomerId(customer.getId());
             tran.setStage(stage);
+            tran.setType("新业务");
             tran.setSource(clue.getSource());
             tran.setContactsId(contacts.getId());
             tran.setDescription("转换创建的交易记录");

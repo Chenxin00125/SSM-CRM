@@ -9,41 +9,69 @@
         select * from tbl_customer where name = #{company}
     </select>
 
+    <!--线索创建客户-->
     <insert id="saveCustomer">
         insert into tbl_customer
          VALUES(#{id},#{clue.owner},#{clue.company},#{clue.website},#{clue.phone},#{clue.createBy},#{createTime},null,null,#{clue.contactSummary},#{clue.nextContactTime},#{clue.description},#{clue.address})
     </insert>
+
+    <!--直接创建客户-->
+    <insert id="saveCustomer1">
+        insert into tbl_customer
+         VALUES(#{id},#{owner},#{name},#{website},#{phone},#{createBy},#{createTime},null,null,#{contactSummary},#{nextContactTime},#{description},#{address})
+    </insert>
+
+    <select id="getCustomerList" resultType="customer">
+        select c.id , c.name , u.name as owner, c.phone ,c.website from tbl_customer c
+        join tbl_user u on c.owner = u.id
+        <where>
+            <if test="customer.name!=null and customer.name!='' ">
+                c.name like '%' #{customer.name} '%'
+            </if>
+            <if test="customer.owner!=null and customer.owner!=''">
+                and u.name like '%' #{customer.owner} '%'
+            </if>
+            <if test="customer.phone!=null and customer.phone!=''">
+                and c.phone like '%' #{customer.phone} '%'
+            </if>
+            <if test="customer.website!=null and customer.website!=''">
+                and c.website like '%' #{customer.website} '%'
+            </if>
+        </where>
+        ORDER BY c.createTime DESC
+        limit #{startNum},#{pageSize}
+
+    </select>
+
+    <select id="getTotalCount" resultType="int">
+        select count(*) from tbl_customer c
+        join tbl_user u on c.owner = u.id
+        <where>
+            <if test="name!=null and name!='' ">
+                c.name like '%' #{name} '%'
+            </if>
+            <if test="owner!=null and owner!=''">
+                and u.name like '%' #{owner} '%'
+            </if>
+            <if test="phone!=null and phone!=''">
+                and c.phone like '%' #{phone} '%'
+            </if>
+            <if test="website!=null and website!=''">
+                and c.website like '%' #{website} '%'
+            </if>
+        </where>
+    </select>
+
+    <select id="getCustomerById" resultType="customer">
+        select id ,name,owner,phone,website,address,nextContactTime,description,contactSummary from tbl_customer where id=#{id}
+    </select>
+
+    <select id="detailCustomer" resultType="customer">
+        select * from tbl_customer where id=#{id}
+    </select>
+
+    <update id="editCustomer">
+        update tbl_customer set name=#{name},owner=#{owner},editTime=#{editTime},editBy=#{editBy},phone=#{phone},website=#{website},address=#{address},nextContactTime=#{nextContactTime},description=#{description},contactSummary=#{contactSummary} where id=#{id}
+    </update>
+
 </mapper>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

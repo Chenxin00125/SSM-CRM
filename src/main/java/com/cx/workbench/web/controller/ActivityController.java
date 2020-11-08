@@ -37,7 +37,6 @@ public class ActivityController {
     @RequestMapping("saveActivity")
     @ResponseBody
     public boolean saveActivity(Activity activity, HttpServletRequest request){
-//        System.out.println(activity);
         activity.setCreateTime(dateTimeUtil.getSysTime());
         User user = (User) request.getSession().getAttribute("user");
         activity.setCreateBy(user.getId());
@@ -53,10 +52,6 @@ public class ActivityController {
     @RequestMapping("getActivityList")
     @ResponseBody
     public Map getActivityList(Activity activity, Integer pageNum, Integer pageSize){
-
-        /*System.out.println(activity);
-        System.out.println(pageNum);
-        System.out.println(pageSize);*/
         List<Activity> activityList = activityService.getActivityList(activity,pageSize,pageNum);
         int totalCount = activityService.getTotalCount(activity);
         Map map = new HashMap();

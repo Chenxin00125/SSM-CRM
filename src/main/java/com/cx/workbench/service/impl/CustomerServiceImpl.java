@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 
 @Service
 @Transactional
@@ -25,5 +27,38 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public int saveCustomer(Clue clue,String createTime,String id) {
         return customerDao.saveCustomer(clue,createTime,id);
+    }
+
+    @Override
+    public int getTotalCount(Customer customer) {
+        int totalCount = customerDao.getTotalCount(customer);
+        return totalCount;
+    }
+
+    @Override
+    public List<Customer> getCustomerList(Customer customer, int pageSize, int pageNum) {
+        int startNum = (pageNum - 1) * pageSize;
+        List<Customer> customerList = customerDao.getCustomerList(customer,startNum,pageSize);
+        return customerList;
+    }
+
+    @Override
+    public int saveCustomer1(Customer customer) {
+        return customerDao.saveCustomer1(customer);
+    }
+
+    @Override
+    public Customer getCustomerById(String id) {
+        return customerDao.getCustomerById(id);
+    }
+
+    @Override
+    public int editCustomer(Customer customer) {
+        return customerDao.editCustomer(customer);
+    }
+
+    @Override
+    public Customer detailCustomer(String id) {
+        return customerDao.getCustomerById(id);
     }
 }

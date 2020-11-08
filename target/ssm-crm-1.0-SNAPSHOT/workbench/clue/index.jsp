@@ -713,7 +713,7 @@
 		</div>
 
 		<%--		分页--%>
-			<div style="height: 50px; position: relative;top: 30px;">
+			<div style="height: 50px; position: relative;top: 70px;">
 				<%--这个div是加入分页插件的位置--%>
 				<div id="cluePage">
 				</div>
